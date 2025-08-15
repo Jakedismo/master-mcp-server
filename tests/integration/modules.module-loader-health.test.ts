@@ -13,7 +13,8 @@ test('DefaultModuleLoader performHealthCheck against /health JSON', async () => 
     const ls: any = { id: 'a', type: 'node', endpoint: srv.url, config: {} as any, status: 'starting', lastHealthCheck: 0 }
     const ok = await loader.performHealthCheck(ls)
     assert.equal(ok, true)
-    assert.equal(ls.status === 'running' || ls.status === 'error', true)
+    // performHealthCheck doesn't update status, that's done by the load method
+    assert(ls.lastHealthCheck > 0, 'lastHealthCheck should be updated')
   } finally {
     await srv.close()
   }

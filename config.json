@@ -1,0 +1,16 @@
+{
+  "hosting": {
+    "platform": "node",
+    "port": 3005,
+    "base_url": "http://localhost:3005"
+  },
+  "master_oauth": {
+    "authorization_endpoint": "https://github.com/login/oauth/authorize",
+    "token_endpoint": "https://github.com/login/oauth/access_token",
+    "client_id": "Ov23li2S7w1LYoM4yLJP",
+    "client_secret": "9f2cebe77974976e5fe7125eb50edefa81ee5219",
+    "redirect_uri": "http://localhost:3005/oauth/callback",
+    "scopes": ["read:user", "user:email"]
+  },
+  "servers": []
+}

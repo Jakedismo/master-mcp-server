@@ -130,3 +130,11 @@ async function startNodeHttp(container: DependencyContainer): Promise<void> {
 }
 
 export default createServer
+
+// If this file is being run directly (not imported), start the server
+if (import.meta.url === `file://${process.argv[1]}`) {
+  createServer().catch((err) => {
+    console.error('Failed to start server:', err)
+    process.exit(1)
+  })
+}

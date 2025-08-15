@@ -22,10 +22,10 @@
     },
     "hosting": {
       "type": "object",
-      "required": ["platform"],
+      "required": ["platform", "base_url"],
       "properties": {
         "platform": { "type": "string", "enum": ["node", "cloudflare-workers", "koyeb", "docker", "unknown"] },
-        "port": { "type": "integer" },
+        "port": { "type": "number" },
         "base_url": { "type": "string" },
         "storage_backend": { "type": "string" }
       },

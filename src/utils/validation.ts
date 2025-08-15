@@ -85,7 +85,7 @@ export const v = {
   number: (opts?: { min?: number; max?: number; int?: boolean }) =>
     makeSchema<number>('number', (i) => {
       if (typeof i !== 'number' || Number.isNaN(i)) throw new Error('not a number')
-      let n = i
+      const n = i
       if (opts?.int) {
         if (!Number.isInteger(n)) throw new Error('not an integer')
       }

@@ -27,7 +27,8 @@ test('OAuthFlowController Worker-style authorize and callback', async () => {
     const html = await authRes.text()
     const m = html.match(/url=([^"\s]+)/)
     assert.ok(m && m[1])
-    const state = new URL(m![1]).searchParams.get('state')!
+    const urlStr = m[1].replace(/&amp;/g, '&') // Decode HTML entities
+    const state = new URL(urlStr).searchParams.get('state')!
     const cbRes = await ctrl.handleRequest(new Request(base + `/oauth/callback?state=${encodeURIComponent(state)}&code=good&provider=master`, { method: 'GET' }))
     assert.equal(cbRes.status, 200)
   } finally {

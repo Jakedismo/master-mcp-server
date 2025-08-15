@@ -13,7 +13,7 @@ test('SchemaValidator accepts minimal valid config', async () => {
       redirect_uri: 'http://localhost/cb',
       scopes: ['openid'],
     },
-    hosting: { platform: 'node', port: 0 },
+    hosting: { platform: 'node' },
     servers: [],
   }
   assert.doesNotThrow(() => SchemaValidator.assertValid(cfg, schema!))
