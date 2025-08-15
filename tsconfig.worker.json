@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist/worker",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "types": [],
+    "lib": ["ES2022", "WebWorker"]
+  },
+  "exclude": [
+    "src/runtime/node.ts",
+    "src/utils/crypto.ts",
+    "src/config/**",
+    "src/auth/token-manager.ts"
+  ]
+}

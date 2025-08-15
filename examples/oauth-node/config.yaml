@@ -1,0 +1,25 @@
+hosting:
+  platform: node
+  port: 3000
+
+master_oauth:
+  authorization_endpoint: https://example.com/oauth/authorize
+  token_endpoint: https://example.com/oauth/token
+  client_id: master-mcp
+  redirect_uri: http://localhost:3000/oauth/callback
+  scopes: [openid]
+
+servers:
+  - id: github-tools
+    type: local
+    auth_strategy: delegate_oauth
+    auth_config:
+      provider: github
+      authorization_endpoint: https://github.com/login/oauth/authorize
+      token_endpoint: https://github.com/login/oauth/access_token
+      client_id: ${GITHUB_CLIENT_ID}
+      client_secret: env:GITHUB_CLIENT_SECRET
+      scopes: [repo, read:user]
+    config:
+      port: 4100
+

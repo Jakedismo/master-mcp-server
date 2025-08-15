@@ -1,0 +1,23 @@
+config:
+  target: "http://127.0.0.1:3000"
+  phases:
+    - duration: 30
+      arrivalRate: 10
+    - duration: 60
+      arrivalRate: 25
+scenarios:
+  - name: "Call tool echo"
+    flow:
+      - post:
+          url: "/mcp/tools/call"
+          json:
+            name: "backend.echo"
+            arguments: { msg: "hello" }
+      - think: 1
+  - name: "Read resource"
+    flow:
+      - post:
+          url: "/mcp/resources/read"
+          json:
+            uri: "backend.docs.readme"
+

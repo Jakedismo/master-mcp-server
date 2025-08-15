@@ -1,0 +1,59 @@
+# Tutorial: Load Balancing & Resilience
+
+Demonstrates multiple backends with load balancing, retries, and circuit breaker tuning.
+
+## Configuration
+
+`examples/multi-server/config.yaml` (provided):
+
+```yaml
+hosting:
+  platform: node
+  port: 3000
+
+master_oauth:
+  authorization_endpoint: https://example.com/oauth/authorize
+  token_endpoint: https://example.com/oauth/token
+  client_id: master-mcp
+  redirect_uri: http://localhost:3000/oauth/callback
+  scopes: [openid]
+
+routing:
+  loadBalancer:
+    strategy: health
+  circuitBreaker:
+    failureThreshold: 3
+    successThreshold: 2
+    recoveryTimeoutMs: 10000
+  retry:
+    maxRetries: 3
+    baseDelayMs: 200
+    maxDelayMs: 3000
+    backoffFactor: 2
+    jitter: full
+    retryOn:
+      networkErrors: true
+      httpStatuses: [408, 429]
+      httpStatusClasses: [5]
+
+servers:
+  - id: compute
+    type: local
+    auth_strategy: bypass_auth
+    config:
+      port: 4101
+  - id: compute
+    type: local
+    auth_strategy: bypass_auth
+    config:
+      port: 4102
+```
+
+Run master with:
+
+```
+MASTER_CONFIG_PATH=examples/multi-server/config.yaml npm run dev
+```
+
+The router will choose an instance per call, retry on transient errors, and open the circuit if failures breach the threshold.
+

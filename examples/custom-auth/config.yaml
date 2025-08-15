@@ -1,0 +1,31 @@
+hosting:
+  platform: node
+  port: 3000
+
+master_oauth:
+  authorization_endpoint: https://example.com/oauth/authorize
+  token_endpoint: https://example.com/oauth/token
+  client_id: master-mcp
+  redirect_uri: http://localhost:3000/oauth/callback
+  scopes: [openid]
+
+servers:
+  - id: public-tools
+    type: local
+    auth_strategy: bypass_auth
+    config:
+      port: 4200
+
+  - id: custom-proxy
+    type: local
+    auth_strategy: proxy_oauth
+    auth_config:
+      provider: google
+      authorization_endpoint: https://accounts.google.com/o/oauth2/v2/auth
+      token_endpoint: https://oauth2.googleapis.com/token
+      client_id: ${GOOGLE_CLIENT_ID}
+      client_secret: env:GOOGLE_CLIENT_SECRET
+      scopes: [openid, profile, email]
+    config:
+      port: 4201
+

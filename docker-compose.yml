@@ -1,0 +1,43 @@
+version: "3.9"
+
+services:
+  master-mcp:
+    build:
+      context: .
+      target: dev
+    image: master-mcp-server:dev
+    container_name: master-mcp-dev
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - MASTER_ENV=development
+      - MASTER_HOSTING_PLATFORM=node
+      - MASTER_HOSTING_PORT=3000
+      # Uncomment and set for local secrets
+      # - MASTER_OAUTH_CLIENT_SECRET=${MASTER_OAUTH_CLIENT_SECRET}
+      # - TOKEN_ENC_KEY=${TOKEN_ENC_KEY}
+    env_file:
+      - .env
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 20s
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    deploy:
+      resources:
+        limits:
+          cpus: "0.75"
+          memory: 768M
+        reservations:
+          cpus: "0.25"
+          memory: 256M
+

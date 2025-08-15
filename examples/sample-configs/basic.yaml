@@ -1,0 +1,21 @@
+hosting:
+  platform: node
+  port: 3000
+
+master_oauth:
+  authorization_endpoint: https://example.com/auth
+  token_endpoint: https://example.com/token
+  client_id: demo-client
+  redirect_uri: http://localhost:3000/callback
+  scopes:
+    - openid
+
+servers:
+  - id: example
+    type: local
+    auth_strategy: master_oauth
+    config:
+      environment: {}
+      args: []
+      port: 3333
+

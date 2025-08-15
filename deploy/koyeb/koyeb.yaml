@@ -1,0 +1,35 @@
+version: v1
+
+services:
+  - name: master-mcp
+    type: web
+    ports:
+      - port: 80
+        protocol: http
+    instance_types:
+      - micro
+    min_instances: 2
+    max_instances: 10
+    scaling:
+      metric: cpu
+      target: 70
+      stabilization_window: 60
+    health_check:
+      path: /health
+      interval: 10s
+      timeout: 3s
+      unhealthy_threshold: 3
+      healthy_threshold: 1
+    docker:
+      image: ghcr.io/OWNER/REPO:latest # replaced by CI/CD
+      env:
+        - key: NODE_ENV
+          value: production
+        - key: LOG_FORMAT
+          value: json
+        - key: LOG_LEVEL
+          value: info
+        # Koyeb provides PORT; entrypoint maps it to hosting.port
+        - key: TOKEN_ENC_KEY
+          value: ${TOKEN_ENC_KEY} # set via Koyeb secrets
+

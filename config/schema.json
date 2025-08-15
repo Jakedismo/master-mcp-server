@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/master-mcp-config.schema.json",
+  "type": "object",
+  "required": ["master_oauth", "hosting", "servers"],
+  "properties": {
+    "master_oauth": {
+      "type": "object",
+      "required": ["authorization_endpoint", "token_endpoint", "client_id", "redirect_uri", "scopes"],
+      "properties": {
+        "issuer": { "type": "string" },
+        "authorization_endpoint": { "type": "string" },
+        "token_endpoint": { "type": "string" },
+        "jwks_uri": { "type": "string" },
+        "client_id": { "type": "string" },
+        "client_secret": { "type": "string" },
+        "redirect_uri": { "type": "string" },
+        "scopes": { "type": "array", "items": { "type": "string" } },
+        "audience": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "hosting": {
+      "type": "object",
+      "required": ["platform"],
+      "properties": {
+        "platform": { "type": "string", "enum": ["node", "cloudflare-workers", "koyeb", "docker", "unknown"] },
+        "port": { "type": "integer" },
+        "base_url": { "type": "string" },
+        "storage_backend": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "logging": { "type": "object", "properties": { "level": { "type": "string", "enum": ["debug", "info", "warn", "error"] } } },
+    "routing": { "type": "object", "additionalProperties": true },
+    "security": { "type": "object", "additionalProperties": true },
+    "servers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "auth_strategy", "config"],
+        "properties": {
+          "id": { "type": "string" },
+          "type": { "type": "string", "enum": ["git", "npm", "pypi", "docker", "local"] },
+          "url": { "type": "string" },
+          "package": { "type": "string" },
+          "version": { "type": "string" },
+          "branch": { "type": "string" },
+          "auth_strategy": { "type": "string", "enum": ["master_oauth", "delegate_oauth", "bypass_auth", "proxy_oauth"] },
+          "auth_config": { "type": "object", "additionalProperties": true },
+          "config": {
+            "type": "object",
+            "properties": {
+              "environment": { "type": "object", "additionalProperties": true },
+              "args": { "type": "array", "items": { "type": "string" } },
+              "port": { "type": "integer" }
+            },
+            "additionalProperties": true
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}
+

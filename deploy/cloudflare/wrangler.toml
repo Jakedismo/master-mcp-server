@@ -1,0 +1,30 @@
+name = "master-mcp-server"
+main = "src/runtime/worker.ts"
+compatibility_date = "2024-07-01"
+workers_dev = true
+
+# Optional: enable Node compat if needed (try to keep off)
+# node_compat = false
+
+[vars]
+# Non-sensitive defaults; override per-env below or via dashboard
+MASTER_HOSTING_PLATFORM = "workers"
+LOG_LEVEL = "info"
+LOG_FORMAT = "json"
+
+[env.staging]
+name = "master-mcp-server-staging"
+
+[env.staging.vars]
+LOG_LEVEL = "debug"
+
+[env.production]
+name = "master-mcp-server-prod"
+
+[env.production.vars]
+LOG_LEVEL = "info"
+
+# Secrets to provision via: wrangler secret put TOKEN_ENC_KEY
+# - TOKEN_ENC_KEY
+# - Any OAuth client secrets required by configured backends
+

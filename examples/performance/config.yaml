@@ -1,0 +1,44 @@
+hosting:
+  platform: node
+  port: 3000
+
+master_oauth:
+  authorization_endpoint: https://example.com/oauth/authorize
+  token_endpoint: https://example.com/oauth/token
+  client_id: master-mcp
+  redirect_uri: http://localhost:3000/oauth/callback
+  scopes: [openid]
+
+logging:
+  level: info
+
+routing:
+  loadBalancer:
+    strategy: weighted
+  retry:
+    maxRetries: 4
+    baseDelayMs: 100
+    maxDelayMs: 1500
+    backoffFactor: 1.8
+    jitter: full
+    retryOn:
+      networkErrors: true
+      httpStatuses: [408, 429]
+      httpStatusClasses: [5]
+  circuitBreaker:
+    failureThreshold: 4
+    successThreshold: 2
+    recoveryTimeoutMs: 8000
+
+servers:
+  - id: compute
+    type: local
+    auth_strategy: bypass_auth
+    config:
+      port: 4301
+  - id: compute
+    type: local
+    auth_strategy: bypass_auth
+    config:
+      port: 4302
+

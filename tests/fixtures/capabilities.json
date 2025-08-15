@@ -1,0 +1,9 @@
+{
+  "tools": [
+    { "name": "echo", "description": "Echo input" }
+  ],
+  "resources": [
+    { "uri": "docs.readme", "name": "Readme", "mimeType": "text/plain" }
+  ]
+}
+
