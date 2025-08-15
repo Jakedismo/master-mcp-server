@@ -5,9 +5,20 @@ export default defineConfig({
   description: 'Aggregate and orchestrate multiple MCP servers behind one endpoint',
   lastUpdated: true,
   cleanUrls: true,
+  head: [
+    ['meta', { name: 'theme-color', content: '#0ea5e9' }],
+    ['meta', { name: 'viewport', content: 'width=device-width, initial-scale=1' }],
+  ],
   themeConfig: {
     logo: '/logo.svg',
     siteTitle: 'Master MCP Server',
+    search: {
+      provider: 'local'
+    },
+    socialLinks: [
+      { icon: 'github', link: 'https://github.com/your-org/master-mcp-server' }
+    ],
+    outline: [2, 6],
     nav: [
       { text: 'Getting Started', link: '/getting-started/overview' },
       { text: 'Guides', link: '/guides/index' },
@@ -26,6 +37,7 @@ export default defineConfig({
           items: [
             { text: 'Overview', link: '/getting-started/overview' },
             { text: 'Installation', link: '/getting-started/installation' },
+            { text: 'Quick Start', link: '/getting-started/quick-start' },
             { text: 'Quickstart (Node)', link: '/getting-started/quickstart-node' },
             { text: 'Quickstart (Workers)', link: '/getting-started/quickstart-workers' },
             { text: 'Core Concepts', link: '/getting-started/concepts' }
@@ -38,6 +50,8 @@ export default defineConfig({
           items: [
             { text: 'Authentication', link: '/guides/authentication' },
             { text: 'OAuth Delegation', link: '/guides/oauth-delegation' },
+            { text: 'Client Integration', link: '/guides/client-integration' },
+            { text: 'Server Sharing', link: '/guides/server-sharing' },
             { text: 'Module Loading', link: '/guides/module-loading' },
             { text: 'Request Routing', link: '/guides/request-routing' },
             { text: 'Configuration', link: '/guides/configuration' },
@@ -60,6 +74,7 @@ export default defineConfig({
           items: [
             { text: 'Overview', link: '/configuration/overview' },
             { text: 'Reference', link: '/configuration/reference' },
+            { text: 'Examples', link: '/configuration/examples' },
             { text: 'Environment Variables', link: '/configuration/environment' }
           ]
         }
@@ -71,7 +86,8 @@ export default defineConfig({
             { text: 'Overview', link: '/deployment/index' },
             { text: 'Docker', link: '/deployment/docker' },
             { text: 'Cloudflare Workers', link: '/deployment/cloudflare-workers' },
-            { text: 'Koyeb', link: '/deployment/koyeb' }
+            { text: 'Koyeb', link: '/deployment/koyeb' },
+            { text: 'Docs Site', link: '/deployment/docs-site' }
           ]
         }
       ],
@@ -123,4 +139,3 @@ export default defineConfig({
     }
   }
 })
-

@@ -18,19 +18,19 @@ This is Phase 11 (Final): the full implementation is complete with documentation
 
 1) Install dependencies (requires network):
 
-```
+```plaintext
 npm ci
 ```
 
 2) Configure environment (copy and edit):
 
-```
+```plaintext
 cp .env.example .env
 ```
 
 3) Run in dev mode:
 
-```
+```plaintext
 npm run dev
 ```
 
@@ -57,7 +57,7 @@ See `docs/` for full guides and end-to-end examples.
 - Configuration reference: `docs/configuration/*`
 - Deployment: `docs/deployment/*`
 - Troubleshooting: `docs/troubleshooting/*`
- - Contributing: `docs/contributing/*`
+- Contributing: `docs/contributing/*`
 
 ## Generate API Docs
 
@@ -65,13 +65,13 @@ We use TypeDoc (Markdown) to generate API docs from TypeScript.
 
 1) Install (requires network):
 
-```
+```plaintext
 npm i -D typedoc typedoc-plugin-markdown
 ```
 
 2) Generate docs:
 
-```
+```plaintext
 npm run docs:api
 ```
 

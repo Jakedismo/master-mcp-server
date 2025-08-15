@@ -1,0 +1,84 @@
+:root {
+  --mcp-accent: #0ea5e9;
+  --mcp-accent-600: #0284c7;
+  --mcp-bg-soft: color-mix(in oklab, var(--vp-c-bg) 90%, var(--mcp-accent) 10%);
+}
+
+.mcp-kicker {
+  font-size: .9rem;
+  color: var(--vp-c-text-2);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+/* Tabs */
+.mcp-tabs {
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--vp-c-bg-soft);
+}
+.mcp-tabs__nav {
+  display: flex;
+  gap: 6px;
+  padding: 8px;
+  background: var(--vp-c-bg);
+  border-bottom: 1px solid var(--vp-c-divider);
+}
+.mcp-tabs__btn {
+  appearance: none;
+  border: 1px solid var(--vp-c-divider);
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: var(--vp-c-bg-soft);
+  color: var(--vp-c-text-1);
+  cursor: pointer;
+  font-weight: 500;
+}
+.mcp-tabs__btn[aria-selected="true"] {
+  background: var(--mcp-accent);
+  border-color: var(--mcp-accent);
+  color: white;
+}
+.mcp-tabs__panel {
+  padding: 12px 14px;
+}
+
+/* Utility blocks */
+.mcp-callout {
+  border-left: 3px solid var(--mcp-accent);
+  padding: 10px 14px;
+  margin: 10px 0;
+  background: var(--vp-c-bg-soft);
+}
+
+.mcp-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 16px;
+}
+.mcp-col-6 { grid-column: span 6; }
+.mcp-col-12 { grid-column: span 12; }
+@media (max-width: 960px) {
+  .mcp-col-6 { grid-column: span 12; }
+}
+
+.mcp-diagram {
+  width: 100%;
+  border: 1px dashed var(--vp-c-divider);
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.mcp-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--mcp-accent);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+}
+.mcp-cta:hover { background: var(--mcp-accent-600); }
+
