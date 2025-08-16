@@ -103,87 +103,14 @@
     <!-- Mobile Menu Overlay -->
     <div class="overlay" id="overlay"></div>
 
-    <!-- Sidebar Navigation -->
-    <div class="sidebar bg-white" id="sidebar">
-        <div class="p-6">
-            <div class="flex items-center justify-between mb-6">
-                <h2 class="text-xl font-bold text-gray-800">Setup Guide</h2>
-                <button class="md:hidden text-gray-600" id="closeSidebar">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
 
-            <!-- Progress Overview -->
-            <div class="mb-6">
-                <div class="flex items-center justify-between text-sm text-gray-600 mb-2">
-                    <span>Progress</span>
-                    <span id="progressText">0/9 Steps</span>
-                </div>
-                <div class="w-full bg-gray-200 rounded-full h-2">
-                    <div class="progress-bar bg-blue-500 h-2 rounded-full" id="progressBar" style="width: 0%"></div>
-                </div>
-            </div>
-
-            <!-- Navigation Menu -->
-            <nav class="space-y-2">
-                <a href="#prerequisites" class="nav-link flex items-center p-3 text-sm text-gray-700 rounded-lg hover:bg-gray-100 transition-colors" data-step="1">
-                    <i class="fas fa-list-check mr-3 w-4"></i>
-                    <span>Prerequisites</span>
-                    <i class="fas fa-circle-check ml-auto text-green-500 hidden check-icon"></i>
-                </a>
-                <a href="#installation" class="nav-link flex items-center p-3 text-sm text-gray-700 rounded-lg hover:bg-gray-100 transition-colors" data-step="2">
-                    <i class="fas fa-download mr-3 w-4"></i>
-                    <span>Installation</span>
-                    <i class="fas fa-circle-check ml-auto text-green-500 hidden check-icon"></i>
-                </a>
-                <a href="#documentation" class="nav-link flex items-center p-3 text-sm text-gray-700 rounded-lg hover:bg-gray-100 transition-colors" data-step="3">
-                    <i class="fas fa-book mr-3 w-4"></i>
-                    <span>Documentation</span>
-                    <i class="fas fa-circle-check ml-auto text-green-500 hidden check-icon"></i>
-                </a>
-                <a href="#oauth-config" class="nav-link flex items-center p-3 text-sm text-gray-700 rounded-lg hover:bg-gray-100 transition-colors" data-step="4">
-                    <i class="fas fa-key mr-3 w-4"></i>
-                    <span>GitHub OAuth</span>
-                    <i class="fas fa-circle-check ml-auto text-green-500 hidden check-icon"></i>
-                </a>
-                <a href="#server-config" class="nav-link flex items-center p-3 text-sm text-gray-700 rounded-lg hover:bg-gray-100 transition-colors" data-step="5">
-                    <i class="fas fa-cog mr-3 w-4"></i>
-                    <span>Server Config</span>
-                    <i class="fas fa-circle-check ml-auto text-green-500 hidden check-icon"></i>
-                </a>
-                <a href="#server-startup" class="nav-link flex items-center p-3 text-sm text-gray-700 rounded-lg hover:bg-gray-100 transition-colors" data-step="6">
-                    <i class="fas fa-play mr-3 w-4"></i>
-                    <span>Server Startup</span>
-                    <i class="fas fa-circle-check ml-auto text-green-500 hidden check-icon"></i>
-                </a>
-                <a href="#claude-integration" class="nav-link flex items-center p-3 text-sm text-gray-700 rounded-lg hover:bg-gray-100 transition-colors" data-step="7">
-                    <i class="fas fa-robot mr-3 w-4"></i>
-                    <span>Claude Integration</span>
-                    <i class="fas fa-circle-check ml-auto text-green-500 hidden check-icon"></i>
-                </a>
-                <a href="#backend-servers" class="nav-link flex items-center p-3 text-sm text-gray-700 rounded-lg hover:bg-gray-100 transition-colors" data-step="8">
-                    <i class="fas fa-server mr-3 w-4"></i>
-                    <span>Backend Servers</span>
-                    <i class="fas fa-circle-check ml-auto text-green-500 hidden check-icon"></i>
-                </a>
-                <a href="#troubleshooting" class="nav-link flex items-center p-3 text-sm text-gray-700 rounded-lg hover:bg-gray-100 transition-colors" data-step="9">
-                    <i class="fas fa-tools mr-3 w-4"></i>
-                    <span>Troubleshooting</span>
-                    <i class="fas fa-circle-check ml-auto text-green-500 hidden check-icon"></i>
-                </a>
-            </nav>
-        </div>
-    </div>
 
     <!-- Main Content -->
-    <div class="md:ml-80 min-h-screen">
+    <div class="min-h-screen">
         <!-- Header -->
         <header class="bg-white shadow-sm border-b p-4">
             <div class="flex items-center justify-between">
                 <div class="flex items-center">
-                    <button class="md:hidden text-gray-600 mr-4" id="openSidebar">
-                        <i class="fas fa-bars text-xl"></i>
-                    </button>
                     <div>
                         <h1 class="text-2xl font-bold text-gray-800">Master MCP Server</h1>
                         <p class="text-gray-600">Complete Installation & Setup Guide</p>
@@ -203,99 +130,7 @@
             </div>
         </header>
 
-        <!-- Top Tabs Navigation -->
-        <nav class="top-tabs border-b overflow-x-auto">
-            <div class="flex items-center gap-2 px-4 py-2">
-                <a href="#prerequisites" data-target="#prerequisites" class="tab-link px-3 py-1.5 rounded-md text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-2 active">
-                    <i class="fas fa-list-check text-blue-500"></i>
-                    <span>Prerequisites</span>
-                </a>
-                <a href="#installation" data-target="#installation" class="tab-link px-3 py-1.5 rounded-md text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-2">
-                    <i class="fas fa-download text-blue-500"></i>
-                    <span>Installation</span>
-                </a>
-                <a href="#documentation" data-target="#documentation" class="tab-link px-3 py-1.5 rounded-md text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-2">
-                    <i class="fas fa-book text-blue-500"></i>
-                    <span>Docs</span>
-                </a>
-                <a href="#oauth-config" data-target="#oauth-config" class="tab-link px-3 py-1.5 rounded-md text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-2">
-                    <i class="fas fa-key text-blue-500"></i>
-                    <span>OAuth</span>
-                </a>
-                <a href="#server-config" data-target="#server-config" class="tab-link px-3 py-1.5 rounded-md text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-2">
-                    <i class="fas fa-cog text-blue-500"></i>
-                    <span>Config</span>
-                </a>
-                <a href="#server-startup" data-target="#server-startup" class="tab-link px-3 py-1.5 rounded-md text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-2">
-                    <i class="fas fa-play text-blue-500"></i>
-                    <span>Startup</span>
-                </a>
-                <a href="#claude-integration" data-target="#claude-integration" class="tab-link px-3 py-1.5 rounded-md text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-2">
-                    <i class="fas fa-robot text-blue-500"></i>
-                    <span>Claude</span>
-                </a>
-                <a href="#backend-servers" data-target="#backend-servers" class="tab-link px-3 py-1.5 rounded-md text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-2">
-                    <i class="fas fa-server text-blue-500"></i>
-                    <span>Backends</span>
-                </a>
-                <a href="#troubleshooting" data-target="#troubleshooting" class="tab-link px-3 py-1.5 rounded-md text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-2">
-                    <i class="fas fa-tools text-blue-500"></i>
-                    <span>Troubleshoot</span>
-                </a>
-            </div>
-        </nav>
 
-        <!-- Content Area -->
-        <main class="p-6">
-        <!-- Top Tabs Navigation -->
-        <nav class="top-tabs border-b overflow-x-auto">
-            <div class="flex items-center gap-2 px-4 py-2">
-                <a href="#prerequisites" data-target="#prerequisites" class="tab-link px-3 py-1.5 rounded-md text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-2 active">
-                    <i class="fas fa-list-check text-blue-500"></i>
-                    <span>Prerequisites</span>
-                </a>
-                <a href="#installation" data-target="#installation" class="tab-link px-3 py-1.5 rounded-md text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-2">
-                    <i class="fas fa-download text-blue-500"></i>
-                    <span>Installation</span>
-                </a>
-                <a href="#documentation" data-target="#documentation" class="tab-link px-3 py-1.5 rounded-md text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-2">
-                    <i class="fas fa-book text-blue-500"></i>
-                    <span>Docs</span>
-                </a>
-                <a href="#oauth-config" data-target="#oauth-config" class="tab-link px-3 py-1.5 rounded-md text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-2">
-                    <i class="fas fa-key text-blue-500"></i>
-                    <span>OAuth</span>
-                </a>
-                <a href="#server-config" data-target="#server-config" class="tab-link px-3 py-1.5 rounded-md text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-2">
-                    <i class="fas fa-cog text-blue-500"></i>
-                    <span>Config</span>
-                </a>
-                <a href="#server-startup" data-target="#server-startup" class="tab-link px-3 py-1.5 rounded-md text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-2">
-                    <i class="fas fa-play text-blue-500"></i>
-                    <span>Startup</span>
-                </a>
-                <a href="#claude-integration" data-target="#claude-integration" class="tab-link px-3 py-1.5 rounded-md text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-2">
-                    <i class="fas fa-robot text-blue-500"></i>
-                    <span>Claude</span>
-                </a>
-                <a href="#backend-servers" data-target="#backend-servers" class="tab-link px-3 py-1.5 rounded-md text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-2">
-                    <i class="fas fa-server text-blue-500"></i>
-                    <span>Backends</span>
-                </a>
-                <a href="#troubleshooting" data-target="#troubleshooting" class="tab-link px-3 py-1.5 rounded-md text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-2">
-                    <i class="fas fa-tools text-blue-500"></i>
-                    <span>Troubleshoot</span>
-                </a>
-            </div>
-        </nav>
-
-                    </button>
-                    <a href="https://github.com/your-repo/master-mcp-server" target="_blank" class="text-gray-600 hover:text-gray-800">
-                        <i class="fab fa-github text-xl"></i>
-                    </a>
-                </div>
-            </div>
-        </header>
 
         <!-- Content Area -->
         <main class="p-6">
@@ -1529,7 +1364,7 @@ npm run dev -- --verbose">
                 this.setupEventListeners();
                 this.updateProgress();
                 this.setupCopyButtons();
-                this.setupSidebar();
+                // Sidebar removed in simplified layout
                 this.setupValidationUtils();
                 this.setupTestButtons();
             }
@@ -1609,26 +1444,10 @@ npm run dev -- --verbose">
                 });
             }
 
-            setupSidebar() {
-                const sidebar = document.getElementById('sidebar');
-                const overlay = document.getElementById('overlay');
-                const openBtn = document.getElementById('openSidebar');
-                const closeBtn = document.getElementById('closeSidebar');
-
-                openBtn.addEventListener('click', () => this.openSidebar());
-                closeBtn.addEventListener('click', () => this.closeSidebar());
-                overlay.addEventListener('click', () => this.closeSidebar());
-            }
-
-            openSidebar() {
-                document.getElementById('sidebar').classList.add('open');
-                document.getElementById('overlay').classList.add('active');
-            }
-
-            closeSidebar() {
-                document.getElementById('sidebar').classList.remove('open');
-                document.getElementById('overlay').classList.remove('active');
-            }
+            // Sidebar methods removed in simplified layout
+            setupSidebar() {}
+            openSidebar() {}
+            closeSidebar() {}
 
             markStepComplete(step) {
                 this.completedSteps.add(step);
