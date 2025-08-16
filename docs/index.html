@@ -74,18 +74,35 @@
         }
         @media (min-width: 768px) {
             .sidebar {
-                position: relative;
+                position: fixed;
+                top: 0;
                 left: 0;
                 width: 320px;
+                height: 100vh;
                 box-shadow: none;
             }
+        /* Improve anchor scrolling with sticky header */
+        section { scroll-margin-top: 96px; }
+        body { margin: 0; }
+        /* Top tabs styling */
+        .top-tabs { position: sticky; top: 0; background: #fff; z-index: 40; }
+        .tab-link { white-space: nowrap; }
+        .tab-link.active { background: #3b82f6; color: #fff; }
+
         }
+        /* Global adjustments for GitHub Pages */
+        section { scroll-margin-top: 96px; }
+        body { margin: 0; }
+        .top-tabs { position: sticky; top: 0; background: #fff; z-index: 40; }
+        .tab-link { white-space: nowrap; }
+        .tab-link.active { background: #3b82f6; color: #fff; }
+
     </style>
 </head>
 <body class="bg-gray-50 font-sans">
     <!-- Mobile Menu Overlay -->
     <div class="overlay" id="overlay"></div>
-    
+
     <!-- Sidebar Navigation -->
     <div class="sidebar bg-white" id="sidebar">
         <div class="p-6">
@@ -95,7 +112,7 @@
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            
+
             <!-- Progress Overview -->
             <div class="mb-6">
                 <div class="flex items-center justify-between text-sm text-gray-600 mb-2">
@@ -106,7 +123,7 @@
                     <div class="progress-bar bg-blue-500 h-2 rounded-full" id="progressBar" style="width: 0%"></div>
                 </div>
             </div>
-            
+
             <!-- Navigation Menu -->
             <nav class="space-y-2">
                 <a href="#prerequisites" class="nav-link flex items-center p-3 text-sm text-gray-700 rounded-lg hover:bg-gray-100 transition-colors" data-step="1">
@@ -157,7 +174,7 @@
             </nav>
         </div>
     </div>
-    
+
     <!-- Main Content -->
     <div class="md:ml-80 min-h-screen">
         <!-- Header -->
@@ -185,7 +202,101 @@
                 </div>
             </div>
         </header>
-        
+
+        <!-- Top Tabs Navigation -->
+        <nav class="top-tabs border-b overflow-x-auto">
+            <div class="flex items-center gap-2 px-4 py-2">
+                <a href="#prerequisites" data-target="#prerequisites" class="tab-link px-3 py-1.5 rounded-md text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-2 active">
+                    <i class="fas fa-list-check text-blue-500"></i>
+                    <span>Prerequisites</span>
+                </a>
+                <a href="#installation" data-target="#installation" class="tab-link px-3 py-1.5 rounded-md text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-2">
+                    <i class="fas fa-download text-blue-500"></i>
+                    <span>Installation</span>
+                </a>
+                <a href="#documentation" data-target="#documentation" class="tab-link px-3 py-1.5 rounded-md text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-2">
+                    <i class="fas fa-book text-blue-500"></i>
+                    <span>Docs</span>
+                </a>
+                <a href="#oauth-config" data-target="#oauth-config" class="tab-link px-3 py-1.5 rounded-md text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-2">
+                    <i class="fas fa-key text-blue-500"></i>
+                    <span>OAuth</span>
+                </a>
+                <a href="#server-config" data-target="#server-config" class="tab-link px-3 py-1.5 rounded-md text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-2">
+                    <i class="fas fa-cog text-blue-500"></i>
+                    <span>Config</span>
+                </a>
+                <a href="#server-startup" data-target="#server-startup" class="tab-link px-3 py-1.5 rounded-md text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-2">
+                    <i class="fas fa-play text-blue-500"></i>
+                    <span>Startup</span>
+                </a>
+                <a href="#claude-integration" data-target="#claude-integration" class="tab-link px-3 py-1.5 rounded-md text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-2">
+                    <i class="fas fa-robot text-blue-500"></i>
+                    <span>Claude</span>
+                </a>
+                <a href="#backend-servers" data-target="#backend-servers" class="tab-link px-3 py-1.5 rounded-md text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-2">
+                    <i class="fas fa-server text-blue-500"></i>
+                    <span>Backends</span>
+                </a>
+                <a href="#troubleshooting" data-target="#troubleshooting" class="tab-link px-3 py-1.5 rounded-md text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-2">
+                    <i class="fas fa-tools text-blue-500"></i>
+                    <span>Troubleshoot</span>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Content Area -->
+        <main class="p-6">
+        <!-- Top Tabs Navigation -->
+        <nav class="top-tabs border-b overflow-x-auto">
+            <div class="flex items-center gap-2 px-4 py-2">
+                <a href="#prerequisites" data-target="#prerequisites" class="tab-link px-3 py-1.5 rounded-md text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-2 active">
+                    <i class="fas fa-list-check text-blue-500"></i>
+                    <span>Prerequisites</span>
+                </a>
+                <a href="#installation" data-target="#installation" class="tab-link px-3 py-1.5 rounded-md text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-2">
+                    <i class="fas fa-download text-blue-500"></i>
+                    <span>Installation</span>
+                </a>
+                <a href="#documentation" data-target="#documentation" class="tab-link px-3 py-1.5 rounded-md text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-2">
+                    <i class="fas fa-book text-blue-500"></i>
+                    <span>Docs</span>
+                </a>
+                <a href="#oauth-config" data-target="#oauth-config" class="tab-link px-3 py-1.5 rounded-md text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-2">
+                    <i class="fas fa-key text-blue-500"></i>
+                    <span>OAuth</span>
+                </a>
+                <a href="#server-config" data-target="#server-config" class="tab-link px-3 py-1.5 rounded-md text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-2">
+                    <i class="fas fa-cog text-blue-500"></i>
+                    <span>Config</span>
+                </a>
+                <a href="#server-startup" data-target="#server-startup" class="tab-link px-3 py-1.5 rounded-md text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-2">
+                    <i class="fas fa-play text-blue-500"></i>
+                    <span>Startup</span>
+                </a>
+                <a href="#claude-integration" data-target="#claude-integration" class="tab-link px-3 py-1.5 rounded-md text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-2">
+                    <i class="fas fa-robot text-blue-500"></i>
+                    <span>Claude</span>
+                </a>
+                <a href="#backend-servers" data-target="#backend-servers" class="tab-link px-3 py-1.5 rounded-md text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-2">
+                    <i class="fas fa-server text-blue-500"></i>
+                    <span>Backends</span>
+                </a>
+                <a href="#troubleshooting" data-target="#troubleshooting" class="tab-link px-3 py-1.5 rounded-md text-sm bg-gray-100 hover:bg-gray-200 flex items-center gap-2">
+                    <i class="fas fa-tools text-blue-500"></i>
+                    <span>Troubleshoot</span>
+                </a>
+            </div>
+        </nav>
+
+                    </button>
+                    <a href="https://github.com/your-repo/master-mcp-server" target="_blank" class="text-gray-600 hover:text-gray-800">
+                        <i class="fab fa-github text-xl"></i>
+                    </a>
+                </div>
+            </div>
+        </header>
+
         <!-- Content Area -->
         <main class="p-6">
             <!-- Welcome Section -->
@@ -212,7 +323,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Step Content -->
             <div class="space-y-8">
                 <!-- Prerequisites -->
@@ -226,9 +337,9 @@
                             <i class="fas fa-check mr-2"></i>Mark Complete
                         </button>
                     </div>
-                    
+
                     <p class="text-gray-600 mb-6">Before we begin, make sure you have the following requirements installed and ready:</p>
-                    
+
                     <div class="grid md:grid-cols-2 gap-6">
                         <div class="space-y-4">
                             <div class="flex items-start p-4 bg-gray-50 rounded-lg">
@@ -244,7 +355,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="flex items-start p-4 bg-gray-50 rounded-lg">
                                 <i class="fab fa-npm text-red-600 text-2xl mr-4 mt-1"></i>
                                 <div>
@@ -259,7 +370,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="space-y-4">
                             <div class="flex items-start p-4 bg-gray-50 rounded-lg">
                                 <i class="fab fa-git-alt text-orange-600 text-2xl mr-4 mt-1"></i>
@@ -274,7 +385,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="flex items-start p-4 bg-gray-50 rounded-lg">
                                 <i class="fab fa-github text-gray-800 text-2xl mr-4 mt-1"></i>
                                 <div>
@@ -285,7 +396,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                         <h4 class="font-semibold text-blue-800 mb-2">
                             <i class="fas fa-info-circle mr-2"></i>Optional Tools
@@ -297,7 +408,7 @@
                         </ul>
                     </div>
                 </section>
-                
+
                 <!-- Installation -->
                 <section id="installation" class="step-card bg-white p-6 rounded-xl shadow-sm">
                     <div class="flex items-center justify-between mb-4">
@@ -309,9 +420,9 @@
                             <i class="fas fa-check mr-2"></i>Mark Complete
                         </button>
                     </div>
-                    
+
                     <p class="text-gray-600 mb-6">Let's clone the repository and install all dependencies:</p>
-                    
+
                     <div class="space-y-6">
                         <div>
                             <h4 class="font-semibold mb-3">1. Clone the Repository</h4>
@@ -324,7 +435,7 @@ cd master-mcp-server">
                                 </button>
                             </div>
                         </div>
-                        
+
                         <div>
                             <h4 class="font-semibold mb-3">2. Install Dependencies</h4>
                             <div class="code-block p-4 relative">
@@ -335,7 +446,7 @@ cd master-mcp-server">
                             </div>
                             <p class="text-sm text-gray-600 mt-2">This will install all required dependencies including TypeScript, testing tools, and documentation packages.</p>
                         </div>
-                        
+
                         <div>
                             <h4 class="font-semibold mb-3">3. Build the Project</h4>
                             <div class="code-block p-4 relative">
@@ -346,7 +457,7 @@ cd master-mcp-server">
                             </div>
                             <p class="text-sm text-gray-600 mt-2">Compiles TypeScript and prepares the application for running.</p>
                         </div>
-                        
+
                         <div>
                             <h4 class="font-semibold mb-3">4. Verify Installation</h4>
                             <div class="code-block p-4 relative">
@@ -358,7 +469,7 @@ cd master-mcp-server">
                             <p class="text-sm text-gray-600 mt-2">Runs the test suite to ensure everything is working correctly.</p>
                         </div>
                     </div>
-                    
+
                     <div class="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
                         <h4 class="font-semibold text-green-800 mb-2">
                             <i class="fas fa-check-circle mr-2"></i>Success Indicators
@@ -371,7 +482,7 @@ cd master-mcp-server">
                         </ul>
                     </div>
                 </section>
-                
+
                 <!-- Documentation -->
                 <section id="documentation" class="step-card bg-white p-6 rounded-xl shadow-sm">
                     <div class="flex items-center justify-between mb-4">
@@ -383,9 +494,9 @@ cd master-mcp-server">
                             <i class="fas fa-check mr-2"></i>Mark Complete
                         </button>
                     </div>
-                    
+
                     <p class="text-gray-600 mb-6">Set up the beautiful VitePress documentation site to explore API references and usage guides:</p>
-                    
+
                     <div class="space-y-6">
                         <div>
                             <h4 class="font-semibold mb-3">1. Install Documentation Dependencies</h4>
@@ -397,7 +508,7 @@ cd master-mcp-server">
                             </div>
                             <p class="text-sm text-gray-600 mt-2">Installs VitePress and related documentation tools.</p>
                         </div>
-                        
+
                         <div>
                             <h4 class="font-semibold mb-3">2. Generate API Documentation</h4>
                             <div class="code-block p-4 relative">
@@ -408,7 +519,7 @@ cd master-mcp-server">
                             </div>
                             <p class="text-sm text-gray-600 mt-2">Generates TypeScript API documentation from your source code.</p>
                         </div>
-                        
+
                         <div>
                             <h4 class="font-semibold mb-3">3. Start Documentation Server</h4>
                             <div class="code-block p-4 relative">
@@ -419,7 +530,7 @@ cd master-mcp-server">
                             </div>
                             <p class="text-sm text-gray-600 mt-2">Starts the documentation server on <strong>http://localhost:5173</strong></p>
                         </div>
-                        
+
                         <div>
                             <h4 class="font-semibold mb-3">4. Explore the Documentation</h4>
                             <div class="grid md:grid-cols-2 gap-4">
@@ -448,7 +559,7 @@ cd master-mcp-server">
                         </div>
                     </div>
                 </section>
-                
+
                 <!-- GitHub OAuth Configuration -->
                 <section id="oauth-config" class="step-card bg-white p-6 rounded-xl shadow-sm">
                     <div class="flex items-center justify-between mb-4">
@@ -460,9 +571,9 @@ cd master-mcp-server">
                             <i class="fas fa-check mr-2"></i>Mark Complete
                         </button>
                     </div>
-                    
+
                     <p class="text-gray-600 mb-6">Set up GitHub OAuth for secure authentication with your Master MCP Server:</p>
-                    
+
                     <div class="space-y-6">
                         <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                             <h4 class="font-semibold text-yellow-800 mb-2">
@@ -470,7 +581,7 @@ cd master-mcp-server">
                             </h4>
                             <p class="text-sm text-yellow-700">Never commit your client secret to version control. Store it securely as an environment variable.</p>
                         </div>
-                        
+
                         <div>
                             <h4 class="font-semibold mb-3">1. Create GitHub OAuth App</h4>
                             <ol class="space-y-3 text-sm text-gray-600">
@@ -507,7 +618,7 @@ cd master-mcp-server">
                                 </li>
                             </ol>
                         </div>
-                        
+
                         <div>
                             <h4 class="font-semibold mb-3">2. Configure Environment Variables</h4>
                             <p class="text-sm text-gray-600 mb-3">Create a <code>.env</code> file in your project root:</p>
@@ -530,7 +641,7 @@ BASE_URL=http://localhost:3005">
                                 </button>
                             </div>
                         </div>
-                        
+
                         <div>
                             <h4 class="font-semibold mb-3">3. Update Configuration File</h4>
                             <p class="text-sm text-gray-600 mb-3">Your <code>config.json</code> should look like this:</p>
@@ -573,7 +684,7 @@ BASE_URL=http://localhost:3005">
                         </div>
                     </div>
                 </section>
-                
+
                 <!-- Server Configuration -->
                 <section id="server-config" class="step-card bg-white p-6 rounded-xl shadow-sm">
                     <div class="flex items-center justify-between mb-4">
@@ -585,9 +696,9 @@ BASE_URL=http://localhost:3005">
                             <i class="fas fa-check mr-2"></i>Mark Complete
                         </button>
                     </div>
-                    
+
                     <p class="text-gray-600 mb-6">Configure your Master MCP Server with the proper settings and security:</p>
-                    
+
                     <div class="space-y-6">
                         <div>
                             <h4 class="font-semibold mb-3">Configuration Options</h4>
@@ -601,7 +712,7 @@ BASE_URL=http://localhost:3005">
                                             <li><strong>base_url:</strong> Public URL for callbacks</li>
                                         </ul>
                                     </div>
-                                    
+
                                     <div class="p-4 bg-gray-50 rounded-lg">
                                         <h5 class="font-semibold text-sm mb-2">🔐 Authentication</h5>
                                         <ul class="text-xs text-gray-600 space-y-1">
@@ -611,7 +722,7 @@ BASE_URL=http://localhost:3005">
                                         </ul>
                                     </div>
                                 </div>
-                                
+
                                 <div class="space-y-4">
                                     <div class="p-4 bg-blue-50 rounded-lg">
                                         <h5 class="font-semibold text-sm mb-2">⚡ Advanced Features</h5>
@@ -621,7 +732,7 @@ BASE_URL=http://localhost:3005">
                                             <li><strong>Retry Policies:</strong> Automatic retry logic</li>
                                         </ul>
                                     </div>
-                                    
+
                                     <div class="p-4 bg-green-50 rounded-lg">
                                         <h5 class="font-semibold text-sm mb-2">📊 Monitoring</h5>
                                         <ul class="text-xs text-gray-600 space-y-1">
@@ -633,7 +744,7 @@ BASE_URL=http://localhost:3005">
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div>
                             <h4 class="font-semibold mb-3">Environment-Based Configuration</h4>
                             <p class="text-sm text-gray-600 mb-3">You can override config values using environment variables:</p>
@@ -662,7 +773,7 @@ MASTER_MCP_LOGGING_LEVEL=debug">
                                 </button>
                             </div>
                         </div>
-                        
+
                         <div>
                             <h4 class="font-semibold mb-3">Validate Configuration</h4>
                             <div class="code-block p-4 relative">
@@ -675,7 +786,7 @@ MASTER_MCP_LOGGING_LEVEL=debug">
                         </div>
                     </div>
                 </section>
-                
+
                 <!-- Server Startup -->
                 <section id="server-startup" class="step-card bg-white p-6 rounded-xl shadow-sm">
                     <div class="flex items-center justify-between mb-4">
@@ -687,9 +798,9 @@ MASTER_MCP_LOGGING_LEVEL=debug">
                             <i class="fas fa-check mr-2"></i>Mark Complete
                         </button>
                     </div>
-                    
+
                     <p class="text-gray-600 mb-6">Start your Master MCP Server and verify it's working correctly:</p>
-                    
+
                     <div class="space-y-6">
                         <div>
                             <h4 class="font-semibold mb-3">1. Start the Server</h4>
@@ -716,7 +827,7 @@ MASTER_MCP_LOGGING_LEVEL=debug">
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div>
                             <h4 class="font-semibold mb-3">2. Verify Server Status</h4>
                             <div class="space-y-3">
@@ -734,7 +845,7 @@ MASTER_MCP_LOGGING_LEVEL=debug">
                                         </a>
                                     </div>
                                 </div>
-                                
+
                                 <div>
                                     <h5 class="text-sm font-semibold mb-2">OAuth Endpoints</h5>
                                     <div class="flex items-center space-x-4">
@@ -749,7 +860,7 @@ MASTER_MCP_LOGGING_LEVEL=debug">
                                         </a>
                                     </div>
                                 </div>
-                                
+
                                 <div>
                                     <h5 class="text-sm font-semibold mb-2">Server Info</h5>
                                     <div class="flex items-center space-x-4">
@@ -766,7 +877,7 @@ MASTER_MCP_LOGGING_LEVEL=debug">
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div>
                             <h4 class="font-semibold mb-3">3. Expected Server Output</h4>
                             <div class="code-block p-4">
@@ -779,7 +890,7 @@ MASTER_MCP_LOGGING_LEVEL=debug">
 📊 Server info: http://localhost:3005/info</code></pre>
                             </div>
                         </div>
-                        
+
                         <div class="bg-green-50 border border-green-200 rounded-lg p-4">
                             <h4 class="font-semibold text-green-800 mb-2">
                                 <i class="fas fa-check-circle mr-2"></i>Success Indicators
@@ -794,7 +905,7 @@ MASTER_MCP_LOGGING_LEVEL=debug">
                         </div>
                     </div>
                 </section>
-                
+
                 <!-- Claude Desktop Integration -->
                 <section id="claude-integration" class="step-card bg-white p-6 rounded-xl shadow-sm">
                     <div class="flex items-center justify-between mb-4">
@@ -806,9 +917,9 @@ MASTER_MCP_LOGGING_LEVEL=debug">
                             <i class="fas fa-check mr-2"></i>Mark Complete
                         </button>
                     </div>
-                    
+
                     <p class="text-gray-600 mb-6">Connect your Master MCP Server to Claude Desktop for seamless AI interactions:</p>
-                    
+
                     <div class="space-y-6">
                         <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
                             <h4 class="font-semibold text-blue-800 mb-2">
@@ -816,7 +927,7 @@ MASTER_MCP_LOGGING_LEVEL=debug">
                             </h4>
                             <p class="text-sm text-blue-700">Claude Desktop is a desktop application that allows you to interact with Claude AI while having access to your local files, tools, and MCP servers for enhanced functionality.</p>
                         </div>
-                        
+
                         <div>
                             <h4 class="font-semibold mb-3">1. Install Claude Desktop</h4>
                             <div class="grid md:grid-cols-2 gap-4">
@@ -836,11 +947,11 @@ MASTER_MCP_LOGGING_LEVEL=debug">
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div>
                             <h4 class="font-semibold mb-3">2. Configure Claude Desktop</h4>
                             <p class="text-sm text-gray-600 mb-3">Add your Master MCP Server to Claude Desktop's configuration:</p>
-                            
+
                             <div class="space-y-4">
                                 <div>
                                     <h5 class="text-sm font-semibold mb-2">Find Configuration File</h5>
@@ -865,7 +976,7 @@ MASTER_MCP_LOGGING_LEVEL=debug">
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <div>
                                     <h5 class="text-sm font-semibold mb-2">Configuration Content</h5>
                                     <div class="code-block p-4 relative">
@@ -902,7 +1013,7 @@ MASTER_MCP_LOGGING_LEVEL=debug">
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div>
                             <h4 class="font-semibold mb-3">3. Alternative: Direct Protocol Connection</h4>
                             <p class="text-sm text-gray-600 mb-3">For development or advanced use, connect directly via stdio:</p>
@@ -929,7 +1040,7 @@ MASTER_MCP_LOGGING_LEVEL=debug">
                                 </button>
                             </div>
                         </div>
-                        
+
                         <div>
                             <h4 class="font-semibold mb-3">4. Test the Integration</h4>
                             <div class="space-y-3">
@@ -942,7 +1053,7 @@ MASTER_MCP_LOGGING_LEVEL=debug">
                                         <li>4. Try using tools and resources from your server</li>
                                     </ol>
                                 </div>
-                                
+
                                 <div class="p-4 bg-yellow-50 rounded-lg">
                                     <h5 class="font-semibold text-yellow-800 text-sm mb-2">🔧 Troubleshooting</h5>
                                     <ul class="text-sm text-yellow-700 space-y-1">
@@ -956,7 +1067,7 @@ MASTER_MCP_LOGGING_LEVEL=debug">
                         </div>
                     </div>
                 </section>
-                
+
                 <!-- Backend Server Configuration -->
                 <section id="backend-servers" class="step-card bg-white p-6 rounded-xl shadow-sm">
                     <div class="flex items-center justify-between mb-4">
@@ -968,9 +1079,9 @@ MASTER_MCP_LOGGING_LEVEL=debug">
                             <i class="fas fa-check mr-2"></i>Mark Complete
                         </button>
                     </div>
-                    
+
                     <p class="text-gray-600 mb-6">Configure your Master MCP Server to manage and route to multiple backend MCP servers:</p>
-                    
+
                     <div class="space-y-6">
                         <div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
                             <h4 class="font-semibold text-purple-800 mb-2">
@@ -978,7 +1089,7 @@ MASTER_MCP_LOGGING_LEVEL=debug">
                             </h4>
                             <p class="text-sm text-purple-700">Your Master MCP Server acts as a central hub, aggregating capabilities from multiple backend servers and presenting them as a unified interface to Claude.</p>
                         </div>
-                        
+
                         <div>
                             <h4 class="font-semibold mb-3">1. Server Configuration Structure</h4>
                             <p class="text-sm text-gray-600 mb-3">Add servers to your <code>config.json</code> file:</p>
@@ -1049,7 +1160,7 @@ MASTER_MCP_LOGGING_LEVEL=debug">
                                 </button>
                             </div>
                         </div>
-                        
+
                         <div>
                             <h4 class="font-semibold mb-3">2. Server Types & Sources</h4>
                             <div class="grid md:grid-cols-2 gap-6">
@@ -1065,7 +1176,7 @@ MASTER_MCP_LOGGING_LEVEL=debug">
                                             <code>"package": "@modelcontextprotocol/server-filesystem"</code>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="p-4 bg-green-50 rounded-lg">
                                         <h5 class="font-semibold text-sm mb-2">🐙 Git Repositories</h5>
                                         <div class="text-xs space-y-1">
@@ -1078,7 +1189,7 @@ MASTER_MCP_LOGGING_LEVEL=debug">
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <div class="space-y-4">
                                     <div class="p-4 bg-orange-50 rounded-lg">
                                         <h5 class="font-semibold text-sm mb-2">🐍 Python Packages</h5>
@@ -1091,7 +1202,7 @@ MASTER_MCP_LOGGING_LEVEL=debug">
                                             <code>"package": "mcp-server-sqlite"</code>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="p-4 bg-purple-50 rounded-lg">
                                         <h5 class="font-semibold text-sm mb-2">📁 Local Servers</h5>
                                         <div class="text-xs space-y-1">
@@ -1106,7 +1217,7 @@ MASTER_MCP_LOGGING_LEVEL=debug">
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div>
                             <h4 class="font-semibold mb-3">3. Authentication Strategies</h4>
                             <div class="grid md:grid-cols-2 gap-4">
@@ -1132,7 +1243,7 @@ MASTER_MCP_LOGGING_LEVEL=debug">
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div>
                             <h4 class="font-semibold mb-3">4. Test Server Configuration</h4>
                             <div class="space-y-3">
@@ -1156,7 +1267,7 @@ npm run dev -- --log-level debug">
                                         <i class="fas fa-copy"></i>
                                     </button>
                                 </div>
-                                
+
                                 <div class="p-4 bg-green-50 border border-green-200 rounded">
                                     <h5 class="font-semibold text-green-800 text-sm mb-2">Expected Output</h5>
                                     <div class="text-xs text-green-700 space-y-1">
@@ -1170,7 +1281,7 @@ npm run dev -- --log-level debug">
                         </div>
                     </div>
                 </section>
-                
+
                 <!-- Troubleshooting -->
                 <section id="troubleshooting" class="step-card bg-white p-6 rounded-xl shadow-sm">
                     <div class="flex items-center justify-between mb-4">
@@ -1182,9 +1293,9 @@ npm run dev -- --log-level debug">
                             <i class="fas fa-check mr-2"></i>Mark Complete
                         </button>
                     </div>
-                    
+
                     <p class="text-gray-600 mb-6">Common issues and their solutions to get your Master MCP Server running smoothly:</p>
-                    
+
                     <div class="space-y-6">
                         <div class="grid md:grid-cols-2 gap-6">
                             <div>
@@ -1199,7 +1310,7 @@ npm run dev -- --log-level debug">
                                             <li>• TypeScript compilation errors</li>
                                         </ul>
                                     </div>
-                                    
+
                                     <div class="border border-red-200 rounded-lg p-4">
                                         <h5 class="font-semibold text-sm mb-2 text-red-700">OAuth Issues</h5>
                                         <ul class="text-xs text-red-600 space-y-1">
@@ -1209,7 +1320,7 @@ npm run dev -- --log-level debug">
                                             <li>• Environment variables not set</li>
                                         </ul>
                                     </div>
-                                    
+
                                     <div class="border border-red-200 rounded-lg p-4">
                                         <h5 class="font-semibold text-sm mb-2 text-red-700">Backend Server Loading</h5>
                                         <ul class="text-xs text-red-600 space-y-1">
@@ -1221,7 +1332,7 @@ npm run dev -- --log-level debug">
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div>
                                 <h4 class="font-semibold mb-3 text-green-600">✅ Solutions</h4>
                                 <div class="space-y-4">
@@ -1238,7 +1349,7 @@ npm run config:validate
 npm run clean && npm run build</code>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="border border-green-200 rounded-lg p-4">
                                         <h5 class="font-semibold text-sm mb-2 text-green-700">OAuth Debug</h5>
                                         <div class="code-block p-2 mb-2">
@@ -1249,7 +1360,7 @@ curl http://localhost:3005/oauth/authorize
 echo $GITHUB_CLIENT_ID</code>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="border border-green-200 rounded-lg p-4">
                                         <h5 class="font-semibold text-sm mb-2 text-green-700">Server Loading</h5>
                                         <div class="code-block p-2 mb-2">
@@ -1263,7 +1374,7 @@ npm run dev -- --debug-servers</code>
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div>
                             <h4 class="font-semibold mb-3">Diagnostic Commands</h4>
                             <div class="grid md:grid-cols-2 gap-4">
@@ -1273,7 +1384,7 @@ npm run dev -- --debug-servers</code>
                                         <pre><code># Server health
 curl http://localhost:3005/health
 
-# Configuration status  
+# Configuration status
 curl http://localhost:3005/config/status
 
 # Server list
@@ -1281,7 +1392,7 @@ curl http://localhost:3005/servers</code></pre>
                                         <button class="copy-btn absolute top-1 right-1 text-gray-400 hover:text-white text-sm" data-copy="# Server health
 curl http://localhost:3005/health
 
-# Configuration status  
+# Configuration status
 curl http://localhost:3005/config/status
 
 # Server list
@@ -1290,7 +1401,7 @@ curl http://localhost:3005/servers">
                                         </button>
                                     </div>
                                 </div>
-                                
+
                                 <div>
                                     <h5 class="text-sm font-semibold mb-2">Logging & Debug</h5>
                                     <div class="code-block p-3 relative">
@@ -1316,7 +1427,7 @@ npm run dev -- --verbose">
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div>
                             <h4 class="font-semibold mb-3">Getting Help</h4>
                             <div class="grid md:grid-cols-3 gap-4">
@@ -1343,12 +1454,13 @@ npm run dev -- --verbose">
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                             <h4 class="font-semibold text-yellow-800 mb-2">
                                 <i class="fas fa-lightbulb mr-2"></i>Pro Tips
                             </h4>
                             <ul class="text-sm text-yellow-700 space-y-1">
+
                                 <li>• Always validate configuration before starting the server</li>
                                 <li>• Use debug logging when troubleshooting issues</li>
                                 <li>• Test individual servers before adding them to the master config</li>
@@ -1358,14 +1470,14 @@ npm run dev -- --verbose">
                         </div>
                     </div>
                 </section>
-                
+
                 <!-- Completion Section -->
                 <section class="bg-gradient-to-r from-green-500 to-blue-600 text-white p-8 rounded-xl">
                     <div class="text-center">
                         <i class="fas fa-trophy text-4xl mb-4"></i>
                         <h2 class="text-2xl font-bold mb-4">Congratulations! 🎉</h2>
                         <p class="text-lg mb-6">You've successfully set up your Master MCP Server! Your server is now ready to aggregate multiple MCP servers and provide seamless AI interactions.</p>
-                        
+
                         <div class="grid md:grid-cols-3 gap-4 mb-6">
                             <div class="bg-white bg-opacity-20 rounded-lg p-4">
                                 <i class="fas fa-server text-2xl mb-2"></i>
@@ -1383,7 +1495,7 @@ npm run dev -- --verbose">
                                 <p class="text-sm opacity-90">Ready for AI interactions</p>
                             </div>
                         </div>
-                        
+
                         <div class="space-y-4">
                             <h3 class="text-xl font-semibold">Next Steps</h3>
                             <div class="flex flex-wrap justify-center gap-4">
@@ -1412,7 +1524,7 @@ npm run dev -- --verbose">
                 this.totalSteps = 9;
                 this.init();
             }
-            
+
             init() {
                 this.setupEventListeners();
                 this.updateProgress();
@@ -1421,7 +1533,7 @@ npm run dev -- --verbose">
                 this.setupValidationUtils();
                 this.setupTestButtons();
             }
-            
+
             setupEventListeners() {
                 // Mark complete buttons
                 document.querySelectorAll('.mark-complete').forEach(btn => {
@@ -1430,17 +1542,42 @@ npm run dev -- --verbose">
                         this.markStepComplete(step);
                     });
                 });
-                
+
+                // Top tabs: click to scroll and mark active
+                document.querySelectorAll('.tab-link').forEach(tab => {
+                    tab.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const targetSel = tab.getAttribute('href');
+                        const target = document.querySelector(targetSel);
+                        if (target) {
+                            target.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    });
+                });
+
+                // Highlight active tab on scroll
+                const sections = Array.from(document.querySelectorAll('main section'));
+                const tabs = Array.from(document.querySelectorAll('.tab-link'));
+                const io = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const id = `#${entry.target.id}`;
+                            tabs.forEach(t => t.classList.toggle('active', t.getAttribute('href') === id));
+                        }
+                    });
+                }, { rootMargin: '-60% 0px -35% 0px', threshold: 0.01 });
+                sections.forEach(sec => io.observe(sec));
+
                 // Reset progress button
                 document.getElementById('resetProgress').addEventListener('click', () => {
                     this.resetProgress();
                 });
-                
+
                 // Export progress button
                 document.getElementById('exportProgress').addEventListener('click', () => {
                     this.exportProgress();
                 });
-                
+
                 // Navigation links
                 document.querySelectorAll('.nav-link').forEach(link => {
                     link.addEventListener('click', (e) => {
@@ -1453,7 +1590,7 @@ npm run dev -- --verbose">
                     });
                 });
             }
-            
+
             setupCopyButtons() {
                 document.querySelectorAll('.copy-btn').forEach(btn => {
                     btn.addEventListener('click', async (e) => {
@@ -1471,35 +1608,35 @@ npm run dev -- --verbose">
                     });
                 });
             }
-            
+
             setupSidebar() {
                 const sidebar = document.getElementById('sidebar');
                 const overlay = document.getElementById('overlay');
                 const openBtn = document.getElementById('openSidebar');
                 const closeBtn = document.getElementById('closeSidebar');
-                
+
                 openBtn.addEventListener('click', () => this.openSidebar());
                 closeBtn.addEventListener('click', () => this.closeSidebar());
                 overlay.addEventListener('click', () => this.closeSidebar());
             }
-            
+
             openSidebar() {
                 document.getElementById('sidebar').classList.add('open');
                 document.getElementById('overlay').classList.add('active');
             }
-            
+
             closeSidebar() {
                 document.getElementById('sidebar').classList.remove('open');
                 document.getElementById('overlay').classList.remove('active');
             }
-            
+
             markStepComplete(step) {
                 this.completedSteps.add(step);
                 this.saveProgress();
                 this.updateProgress();
                 this.updateStepUI(step);
             }
-            
+
             updateStepUI(step) {
                 // Update step card
                 const stepCard = document.querySelector(`section[id*="step-${step}"], section:nth-of-type(${step})`);
@@ -1513,23 +1650,23 @@ npm run dev -- --verbose">
                         button.disabled = true;
                     }
                 }
-                
+
                 // Update sidebar navigation
                 const navLink = document.querySelector(`[data-step="${step}"]`);
                 if (navLink) {
                     navLink.querySelector('.check-icon').classList.remove('hidden');
                 }
             }
-            
+
             updateProgress() {
                 const progress = (this.completedSteps.size / this.totalSteps) * 100;
                 document.getElementById('progressBar').style.width = `${progress}%`;
                 document.getElementById('progressText').textContent = `${this.completedSteps.size}/${this.totalSteps} Steps`;
-                
+
                 // Update completed steps UI
                 this.completedSteps.forEach(step => this.updateStepUI(step));
             }
-            
+
             resetProgress() {
                 if (confirm('Are you sure you want to reset all progress?')) {
                     this.completedSteps.clear();
@@ -1537,21 +1674,21 @@ npm run dev -- --verbose">
                     location.reload();
                 }
             }
-            
+
             saveProgress() {
                 localStorage.setItem('installation-progress', JSON.stringify([...this.completedSteps]));
             }
-            
+
             loadProgress() {
                 const saved = localStorage.getItem('installation-progress');
                 return saved ? JSON.parse(saved) : [];
             }
-            
+
             setupValidationUtils() {
                 // Add validation indicators to various sections
                 this.addValidationIndicators();
             }
-            
+
             setupTestButtons() {
                 // Enhance test buttons with actual functionality
                 document.querySelectorAll('a[href*="localhost:3005"]').forEach(link => {
@@ -1563,7 +1700,7 @@ npm run dev -- --verbose">
                     }
                 });
             }
-            
+
             addValidationIndicators() {
                 // Add real-time validation for configuration sections
                 const sections = [
@@ -1572,7 +1709,7 @@ npm run dev -- --verbose">
                     { id: 'oauth-config', validator: this.validateOAuthConfig },
                     { id: 'server-config', validator: this.validateServerConfig }
                 ];
-                
+
                 sections.forEach(({ id, validator }) => {
                     const section = document.getElementById(id);
                     if (section) {
@@ -1580,7 +1717,7 @@ npm run dev -- --verbose">
                     }
                 });
             }
-            
+
             addValidationBadge(section, validator) {
                 const header = section.querySelector('h3');
                 if (header) {
@@ -1588,49 +1725,49 @@ npm run dev -- --verbose">
                     badge.className = 'validation-badge ml-2 px-2 py-1 text-xs rounded-full bg-gray-200 text-gray-600';
                     badge.textContent = 'Validating...';
                     header.appendChild(badge);
-                    
+
                     // Run validation
                     setTimeout(() => {
                         const isValid = validator();
-                        badge.className = isValid 
+                        badge.className = isValid
                             ? 'validation-badge ml-2 px-2 py-1 text-xs rounded-full bg-green-200 text-green-800'
                             : 'validation-badge ml-2 px-2 py-1 text-xs rounded-full bg-yellow-200 text-yellow-800';
                         badge.textContent = isValid ? 'Ready' : 'Check setup';
                     }, 1000);
                 }
             }
-            
+
             validatePrerequisites() {
                 // Simple validation - check if common tools might be available
                 return true; // Assume prerequisites are met for demo
             }
-            
+
             validateInstallation() {
                 // Check if we're likely in a Node.js project directory
                 return window.location.protocol === 'file:' || window.location.hostname === 'localhost';
             }
-            
+
             validateOAuthConfig() {
                 // Basic validation for OAuth configuration
                 return document.querySelector('code')?.textContent?.includes('github.com');
             }
-            
+
             validateServerConfig() {
                 // Check if configuration examples are visible
                 return document.querySelector('code')?.textContent?.includes('config.json');
             }
-            
+
             async testEndpoint(url, button) {
                 const originalText = button.innerHTML;
                 button.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i>Testing...';
                 button.classList.add('opacity-50', 'pointer-events-none');
-                
+
                 try {
-                    const response = await fetch(url, { 
+                    const response = await fetch(url, {
                         method: 'GET',
                         mode: 'no-cors' // Handle CORS issues
                     });
-                    
+
                     // Since we're using no-cors, we can't read the response
                     // But we can detect if the request went through
                     this.showTestResult(button, 'success', 'Connection successful!');
@@ -1648,7 +1785,7 @@ npm run dev -- --verbose">
                     }, 3000);
                 }
             }
-            
+
             showTestResult(button, type, message) {
                 const resultDiv = document.createElement('div');
                 resultDiv.className = `test-result mt-2 p-2 rounded text-sm ${
@@ -1660,13 +1797,13 @@ npm run dev -- --verbose">
                     type === 'success' ? 'check-circle' :
                     type === 'warning' ? 'exclamation-triangle' : 'times-circle'
                 } mr-1"></i>${message}`;
-                
+
                 // Remove any existing result
                 const existingResult = button.parentNode.querySelector('.test-result');
                 if (existingResult) existingResult.remove();
-                
+
                 button.parentNode.appendChild(resultDiv);
-                
+
                 // Auto-remove after 5 seconds
                 setTimeout(() => {
                     if (resultDiv.parentNode) {
@@ -1674,7 +1811,7 @@ npm run dev -- --verbose">
                     }
                 }, 5000);
             }
-            
+
             // Advanced features
             showNotification(message, type = 'info') {
                 const notification = document.createElement('div');
@@ -1689,30 +1826,30 @@ npm run dev -- --verbose">
                     type === 'error' ? 'times' :
                     type === 'warning' ? 'exclamation' : 'info'
                 } mr-2"></i>${message}`;
-                
+
                 document.body.appendChild(notification);
-                
+
                 // Animate in
                 notification.style.transform = 'translateX(100%)';
                 setTimeout(() => {
                     notification.style.transform = 'translateX(0)';
                     notification.style.transition = 'transform 0.3s ease';
                 }, 10);
-                
+
                 // Auto-remove
                 setTimeout(() => {
                     notification.style.transform = 'translateX(100%)';
                     setTimeout(() => notification.remove(), 300);
                 }, 4000);
             }
-            
+
             exportProgress() {
                 const progress = {
                     completedSteps: [...this.completedSteps],
                     timestamp: new Date().toISOString(),
                     totalSteps: this.totalSteps
                 };
-                
+
                 const blob = new Blob([JSON.stringify(progress, null, 2)], { type: 'application/json' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
@@ -1720,11 +1857,11 @@ npm run dev -- --verbose">
                 a.download = 'master-mcp-server-progress.json';
                 a.click();
                 URL.revokeObjectURL(url);
-                
+
                 this.showNotification('Progress exported successfully!', 'success');
             }
         }
-        
+
         // Initialize dashboard when DOM is loaded
         document.addEventListener('DOMContentLoaded', () => {
             new InstallationDashboard();
