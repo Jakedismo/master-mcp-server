@@ -271,3 +271,23 @@ k6-results/
 !deploy/cloudflare/wrangler.toml
 !deploy/koyeb/koyeb.yaml
 
+
+# MCP / local tooling
+.crush/
+.kiro/
+.claude/
+.ouroboros/
+ouroboros-results/
+
+# Keep uv.lock tracked (do not ignore)
+
+# IDEs and Ouroboros
+AGENTS.md
+CLAUDE.md
+CRUSH.md
+IMPLEMENTATION_PLAN.md
+SESSION-MEMORY.md
+task-definition.md
+
+# Documentation application
+.vitepress
