@@ -1,30 +1,19 @@
-# API Reference
+**master-mcp-server**
 
-The API reference is generated from source using TypeDoc with the Markdown plugin.
+***
 
-## Generate
+# master-mcp-server
 
-1) Install dev dependencies (requires network):
+## Interfaces
 
-```
-npm i -D typedoc typedoc-plugin-markdown
-```
+- [RunningServer](interfaces/RunningServer.md)
 
-2) Generate docs:
+## Functions
 
-```
-npm run docs:api
-```
+- [createServer](functions/createServer.md)
 
-This will output Markdown files into `docs/api/`.
+## References
 
-## Entrypoints
+### default
 
-The TypeDoc configuration is at `typedoc.json` and includes `src/**/*.ts`. Key modules:
-
-- Authentication: `src/auth/*`
-- Configuration: `src/config/*`
-- OAuth flows: `src/oauth/*`
-- Server and routing: `src/server/*`, `src/modules/*`, `src/routing/*`
-- Utilities: `src/utils/*`
-
+Renames and re-exports [createServer](functions/createServer.md)

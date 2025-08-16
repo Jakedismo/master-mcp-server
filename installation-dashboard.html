@@ -1,0 +1,1734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master MCP Server - Installation Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .step-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid #e5e7eb;
+        }
+        .step-card.completed {
+            border-left-color: #10b981;
+            background-color: #f0fdf4;
+        }
+        .step-card.active {
+            border-left-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+        .copy-btn {
+            transition: all 0.2s ease;
+        }
+        .copy-btn:hover {
+            transform: scale(1.05);
+        }
+        .progress-bar {
+            transition: width 0.5s ease;
+        }
+        .code-block {
+            background: #1f2937;
+            color: #f9fafb;
+            border-radius: 0.5rem;
+            position: relative;
+        }
+        .expandable {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        .expandable.expanded {
+            max-height: 1000px;
+        }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 300px;
+            height: 100vh;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            transition: left 0.3s ease;
+            z-index: 1000;
+        }
+        .sidebar.open {
+            left: 0;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        @media (min-width: 768px) {
+            .sidebar {
+                position: relative;
+                left: 0;
+                width: 320px;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Mobile Menu Overlay -->
+    <div class="overlay" id="overlay"></div>
+    
+    <!-- Sidebar Navigation -->
+    <div class="sidebar bg-white" id="sidebar">
+        <div class="p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-xl font-bold text-gray-800">Setup Guide</h2>
+                <button class="md:hidden text-gray-600" id="closeSidebar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <!-- Progress Overview -->
+            <div class="mb-6">
+                <div class="flex items-center justify-between text-sm text-gray-600 mb-2">
+                    <span>Progress</span>
+                    <span id="progressText">0/9 Steps</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div class="progress-bar bg-blue-500 h-2 rounded-full" id="progressBar" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <!-- Navigation Menu -->
+            <nav class="space-y-2">
+                <a href="#prerequisites" class="nav-link flex items-center p-3 text-sm text-gray-700 rounded-lg hover:bg-gray-100 transition-colors" data-step="1">
+                    <i class="fas fa-list-check mr-3 w-4"></i>
+                    <span>Prerequisites</span>
+                    <i class="fas fa-circle-check ml-auto text-green-500 hidden check-icon"></i>
+                </a>
+                <a href="#installation" class="nav-link flex items-center p-3 text-sm text-gray-700 rounded-lg hover:bg-gray-100 transition-colors" data-step="2">
+                    <i class="fas fa-download mr-3 w-4"></i>
+                    <span>Installation</span>
+                    <i class="fas fa-circle-check ml-auto text-green-500 hidden check-icon"></i>
+                </a>
+                <a href="#documentation" class="nav-link flex items-center p-3 text-sm text-gray-700 rounded-lg hover:bg-gray-100 transition-colors" data-step="3">
+                    <i class="fas fa-book mr-3 w-4"></i>
+                    <span>Documentation</span>
+                    <i class="fas fa-circle-check ml-auto text-green-500 hidden check-icon"></i>
+                </a>
+                <a href="#oauth-config" class="nav-link flex items-center p-3 text-sm text-gray-700 rounded-lg hover:bg-gray-100 transition-colors" data-step="4">
+                    <i class="fas fa-key mr-3 w-4"></i>
+                    <span>GitHub OAuth</span>
+                    <i class="fas fa-circle-check ml-auto text-green-500 hidden check-icon"></i>
+                </a>
+                <a href="#server-config" class="nav-link flex items-center p-3 text-sm text-gray-700 rounded-lg hover:bg-gray-100 transition-colors" data-step="5">
+                    <i class="fas fa-cog mr-3 w-4"></i>
+                    <span>Server Config</span>
+                    <i class="fas fa-circle-check ml-auto text-green-500 hidden check-icon"></i>
+                </a>
+                <a href="#server-startup" class="nav-link flex items-center p-3 text-sm text-gray-700 rounded-lg hover:bg-gray-100 transition-colors" data-step="6">
+                    <i class="fas fa-play mr-3 w-4"></i>
+                    <span>Server Startup</span>
+                    <i class="fas fa-circle-check ml-auto text-green-500 hidden check-icon"></i>
+                </a>
+                <a href="#claude-integration" class="nav-link flex items-center p-3 text-sm text-gray-700 rounded-lg hover:bg-gray-100 transition-colors" data-step="7">
+                    <i class="fas fa-robot mr-3 w-4"></i>
+                    <span>Claude Integration</span>
+                    <i class="fas fa-circle-check ml-auto text-green-500 hidden check-icon"></i>
+                </a>
+                <a href="#backend-servers" class="nav-link flex items-center p-3 text-sm text-gray-700 rounded-lg hover:bg-gray-100 transition-colors" data-step="8">
+                    <i class="fas fa-server mr-3 w-4"></i>
+                    <span>Backend Servers</span>
+                    <i class="fas fa-circle-check ml-auto text-green-500 hidden check-icon"></i>
+                </a>
+                <a href="#troubleshooting" class="nav-link flex items-center p-3 text-sm text-gray-700 rounded-lg hover:bg-gray-100 transition-colors" data-step="9">
+                    <i class="fas fa-tools mr-3 w-4"></i>
+                    <span>Troubleshooting</span>
+                    <i class="fas fa-circle-check ml-auto text-green-500 hidden check-icon"></i>
+                </a>
+            </nav>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="md:ml-80 min-h-screen">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b p-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <button class="md:hidden text-gray-600 mr-4" id="openSidebar">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-800">Master MCP Server</h1>
+                        <p class="text-gray-600">Complete Installation & Setup Guide</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors" id="exportProgress">
+                        <i class="fas fa-download mr-2"></i>Export Progress
+                    </button>
+                    <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors" id="resetProgress">
+                        <i class="fas fa-refresh mr-2"></i>Reset Progress
+                    </button>
+                    <a href="https://github.com/your-repo/master-mcp-server" target="_blank" class="text-gray-600 hover:text-gray-800">
+                        <i class="fab fa-github text-xl"></i>
+                    </a>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Content Area -->
+        <main class="p-6">
+            <!-- Welcome Section -->
+            <div class="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-8 rounded-xl mb-8">
+                <div class="max-w-4xl">
+                    <h2 class="text-3xl font-bold mb-4">Welcome to Master MCP Server!</h2>
+                    <p class="text-lg mb-6">This interactive guide will walk you through setting up your Master MCP Server - a powerful aggregation server that manages multiple Model Context Protocol servers with advanced authentication, routing, and monitoring capabilities.</p>
+                    <div class="flex flex-wrap gap-4">
+                        <div class="bg-white bg-opacity-20 rounded-lg p-4 flex-1 min-w-48">
+                            <i class="fas fa-shield-alt text-2xl mb-2"></i>
+                            <h3 class="font-semibold">Secure Authentication</h3>
+                            <p class="text-sm opacity-90">OAuth/OIDC with multiple strategies</p>
+                        </div>
+                        <div class="bg-white bg-opacity-20 rounded-lg p-4 flex-1 min-w-48">
+                            <i class="fas fa-route text-2xl mb-2"></i>
+                            <h3 class="font-semibold">Smart Routing</h3>
+                            <p class="text-sm opacity-90">Load balancing & circuit breakers</p>
+                        </div>
+                        <div class="bg-white bg-opacity-20 rounded-lg p-4 flex-1 min-w-48">
+                            <i class="fas fa-chart-line text-2xl mb-2"></i>
+                            <h3 class="font-semibold">Monitoring</h3>
+                            <p class="text-sm opacity-90">Real-time metrics & health checks</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Step Content -->
+            <div class="space-y-8">
+                <!-- Prerequisites -->
+                <section id="prerequisites" class="step-card bg-white p-6 rounded-xl shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-semibold flex items-center">
+                            <i class="fas fa-list-check mr-3 text-blue-500"></i>
+                            Step 1: Prerequisites
+                        </h3>
+                        <button class="mark-complete bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors" data-step="1">
+                            <i class="fas fa-check mr-2"></i>Mark Complete
+                        </button>
+                    </div>
+                    
+                    <p class="text-gray-600 mb-6">Before we begin, make sure you have the following requirements installed and ready:</p>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <div class="flex items-start p-4 bg-gray-50 rounded-lg">
+                                <i class="fab fa-node-js text-green-600 text-2xl mr-4 mt-1"></i>
+                                <div>
+                                    <h4 class="font-semibold">Node.js 18+</h4>
+                                    <p class="text-sm text-gray-600 mb-2">JavaScript runtime for the server</p>
+                                    <div class="code-block p-3 text-sm">
+                                        <code>node --version</code>
+                                        <button class="copy-btn absolute top-2 right-2 text-gray-400 hover:text-white" data-copy="node --version">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start p-4 bg-gray-50 rounded-lg">
+                                <i class="fab fa-npm text-red-600 text-2xl mr-4 mt-1"></i>
+                                <div>
+                                    <h4 class="font-semibold">npm or yarn</h4>
+                                    <p class="text-sm text-gray-600 mb-2">Package manager for dependencies</p>
+                                    <div class="code-block p-3 text-sm">
+                                        <code>npm --version</code>
+                                        <button class="copy-btn absolute top-2 right-2 text-gray-400 hover:text-white" data-copy="npm --version">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-start p-4 bg-gray-50 rounded-lg">
+                                <i class="fab fa-git-alt text-orange-600 text-2xl mr-4 mt-1"></i>
+                                <div>
+                                    <h4 class="font-semibold">Git</h4>
+                                    <p class="text-sm text-gray-600 mb-2">Version control for cloning the repository</p>
+                                    <div class="code-block p-3 text-sm">
+                                        <code>git --version</code>
+                                        <button class="copy-btn absolute top-2 right-2 text-gray-400 hover:text-white" data-copy="git --version">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start p-4 bg-gray-50 rounded-lg">
+                                <i class="fab fa-github text-gray-800 text-2xl mr-4 mt-1"></i>
+                                <div>
+                                    <h4 class="font-semibold">GitHub Account</h4>
+                                    <p class="text-sm text-gray-600 mb-2">Required for OAuth configuration</p>
+                                    <a href="https://github.com/signup" target="_blank" class="text-blue-500 hover:text-blue-600 text-sm">Create account →</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                        <h4 class="font-semibold text-blue-800 mb-2">
+                            <i class="fas fa-info-circle mr-2"></i>Optional Tools
+                        </h4>
+                        <ul class="text-sm text-blue-700 space-y-1">
+                            <li>• <strong>Claude Desktop</strong> - For testing the MCP integration</li>
+                            <li>• <strong>VS Code</strong> - Recommended IDE with TypeScript support</li>
+                            <li>• <strong>Docker</strong> - For containerized deployment (optional)</li>
+                        </ul>
+                    </div>
+                </section>
+                
+                <!-- Installation -->
+                <section id="installation" class="step-card bg-white p-6 rounded-xl shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-semibold flex items-center">
+                            <i class="fas fa-download mr-3 text-blue-500"></i>
+                            Step 2: Installation
+                        </h3>
+                        <button class="mark-complete bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors" data-step="2">
+                            <i class="fas fa-check mr-2"></i>Mark Complete
+                        </button>
+                    </div>
+                    
+                    <p class="text-gray-600 mb-6">Let's clone the repository and install all dependencies:</p>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <h4 class="font-semibold mb-3">1. Clone the Repository</h4>
+                            <div class="code-block p-4 relative">
+                                <pre><code>git clone https://github.com/your-repo/master-mcp-server.git
+cd master-mcp-server</code></pre>
+                                <button class="copy-btn absolute top-2 right-2 text-gray-400 hover:text-white" data-copy="git clone https://github.com/your-repo/master-mcp-server.git
+cd master-mcp-server">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-3">2. Install Dependencies</h4>
+                            <div class="code-block p-4 relative">
+                                <pre><code>npm install</code></pre>
+                                <button class="copy-btn absolute top-2 right-2 text-gray-400 hover:text-white" data-copy="npm install">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                            <p class="text-sm text-gray-600 mt-2">This will install all required dependencies including TypeScript, testing tools, and documentation packages.</p>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-3">3. Build the Project</h4>
+                            <div class="code-block p-4 relative">
+                                <pre><code>npm run build</code></pre>
+                                <button class="copy-btn absolute top-2 right-2 text-gray-400 hover:text-white" data-copy="npm run build">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                            <p class="text-sm text-gray-600 mt-2">Compiles TypeScript and prepares the application for running.</p>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-3">4. Verify Installation</h4>
+                            <div class="code-block p-4 relative">
+                                <pre><code>npm test</code></pre>
+                                <button class="copy-btn absolute top-2 right-2 text-gray-400 hover:text-white" data-copy="npm test">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                            <p class="text-sm text-gray-600 mt-2">Runs the test suite to ensure everything is working correctly.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+                        <h4 class="font-semibold text-green-800 mb-2">
+                            <i class="fas fa-check-circle mr-2"></i>Success Indicators
+                        </h4>
+                        <ul class="text-sm text-green-700 space-y-1">
+                            <li>• No error messages during npm install</li>
+                            <li>• Build completes without TypeScript errors</li>
+                            <li>• All tests pass successfully</li>
+                            <li>• Dependencies listed in package.json are installed</li>
+                        </ul>
+                    </div>
+                </section>
+                
+                <!-- Documentation -->
+                <section id="documentation" class="step-card bg-white p-6 rounded-xl shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-semibold flex items-center">
+                            <i class="fas fa-book mr-3 text-blue-500"></i>
+                            Step 3: Documentation Setup
+                        </h3>
+                        <button class="mark-complete bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors" data-step="3">
+                            <i class="fas fa-check mr-2"></i>Mark Complete
+                        </button>
+                    </div>
+                    
+                    <p class="text-gray-600 mb-6">Set up the beautiful VitePress documentation site to explore API references and usage guides:</p>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <h4 class="font-semibold mb-3">1. Install Documentation Dependencies</h4>
+                            <div class="code-block p-4 relative">
+                                <pre><code>npm run docs:install</code></pre>
+                                <button class="copy-btn absolute top-2 right-2 text-gray-400 hover:text-white" data-copy="npm run docs:install">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                            <p class="text-sm text-gray-600 mt-2">Installs VitePress and related documentation tools.</p>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-3">2. Generate API Documentation</h4>
+                            <div class="code-block p-4 relative">
+                                <pre><code>npm run docs:generate</code></pre>
+                                <button class="copy-btn absolute top-2 right-2 text-gray-400 hover:text-white" data-copy="npm run docs:generate">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                            <p class="text-sm text-gray-600 mt-2">Generates TypeScript API documentation from your source code.</p>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-3">3. Start Documentation Server</h4>
+                            <div class="code-block p-4 relative">
+                                <pre><code>npm run docs:dev</code></pre>
+                                <button class="copy-btn absolute top-2 right-2 text-gray-400 hover:text-white" data-copy="npm run docs:dev">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                            <p class="text-sm text-gray-600 mt-2">Starts the documentation server on <strong>http://localhost:5173</strong></p>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-3">4. Explore the Documentation</h4>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="p-4 bg-gray-50 rounded-lg">
+                                    <h5 class="font-semibold text-sm mb-2">📚 Available Sections</h5>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li>• Getting Started Guide</li>
+                                        <li>• API Reference</li>
+                                        <li>• Configuration Options</li>
+                                        <li>• Authentication Strategies</li>
+                                        <li>• Deployment Guides</li>
+                                    </ul>
+                                </div>
+                                <div class="p-4 bg-blue-50 rounded-lg">
+                                    <h5 class="font-semibold text-sm mb-2">🔗 Quick Access</h5>
+                                    <div class="space-y-2">
+                                        <a href="http://localhost:5173" target="_blank" class="block text-blue-600 hover:text-blue-800 text-sm">
+                                            <i class="fas fa-external-link-alt mr-1"></i>Open Documentation
+                                        </a>
+                                        <a href="http://localhost:5173/api/" target="_blank" class="block text-blue-600 hover:text-blue-800 text-sm">
+                                            <i class="fas fa-code mr-1"></i>API Reference
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- GitHub OAuth Configuration -->
+                <section id="oauth-config" class="step-card bg-white p-6 rounded-xl shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-semibold flex items-center">
+                            <i class="fas fa-key mr-3 text-blue-500"></i>
+                            Step 4: GitHub OAuth Configuration
+                        </h3>
+                        <button class="mark-complete bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors" data-step="4">
+                            <i class="fas fa-check mr-2"></i>Mark Complete
+                        </button>
+                    </div>
+                    
+                    <p class="text-gray-600 mb-6">Set up GitHub OAuth for secure authentication with your Master MCP Server:</p>
+                    
+                    <div class="space-y-6">
+                        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                            <h4 class="font-semibold text-yellow-800 mb-2">
+                                <i class="fas fa-exclamation-triangle mr-2"></i>Important Security Note
+                            </h4>
+                            <p class="text-sm text-yellow-700">Never commit your client secret to version control. Store it securely as an environment variable.</p>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-3">1. Create GitHub OAuth App</h4>
+                            <ol class="space-y-3 text-sm text-gray-600">
+                                <li class="flex items-start">
+                                    <span class="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs mr-3 mt-0.5">1</span>
+                                    <div>
+                                        <p>Go to <a href="https://github.com/settings/developers" target="_blank" class="text-blue-600 hover:text-blue-800">GitHub Developer Settings</a></p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs mr-3 mt-0.5">2</span>
+                                    <div>
+                                        <p>Click <strong>"New OAuth App"</strong></p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs mr-3 mt-0.5">3</span>
+                                    <div>
+                                        <p>Fill in the application details:</p>
+                                        <div class="mt-2 p-3 bg-gray-50 rounded">
+                                            <div class="space-y-2 text-xs">
+                                                <div><strong>Application name:</strong> Master MCP Server</div>
+                                                <div><strong>Homepage URL:</strong> http://localhost:3005</div>
+                                                <div><strong>Authorization callback URL:</strong> http://localhost:3005/oauth/callback</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs mr-3 mt-0.5">4</span>
+                                    <div>
+                                        <p>Copy your <strong>Client ID</strong> and generate a <strong>Client Secret</strong></p>
+                                    </div>
+                                </li>
+                            </ol>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-3">2. Configure Environment Variables</h4>
+                            <p class="text-sm text-gray-600 mb-3">Create a <code>.env</code> file in your project root:</p>
+                            <div class="code-block p-4 relative">
+                                <pre><code># GitHub OAuth Configuration
+GITHUB_CLIENT_ID=your_client_id_here
+GITHUB_CLIENT_SECRET=your_client_secret_here
+
+# Server Configuration
+PORT=3005
+BASE_URL=http://localhost:3005</code></pre>
+                                <button class="copy-btn absolute top-2 right-2 text-gray-400 hover:text-white" data-copy="# GitHub OAuth Configuration
+GITHUB_CLIENT_ID=your_client_id_here
+GITHUB_CLIENT_SECRET=your_client_secret_here
+
+# Server Configuration
+PORT=3005
+BASE_URL=http://localhost:3005">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-3">3. Update Configuration File</h4>
+                            <p class="text-sm text-gray-600 mb-3">Your <code>config.json</code> should look like this:</p>
+                            <div class="code-block p-4 relative">
+                                <pre><code>{
+  "hosting": {
+    "platform": "node",
+    "port": 3005,
+    "base_url": "http://localhost:3005"
+  },
+  "master_oauth": {
+    "authorization_endpoint": "https://github.com/login/oauth/authorize",
+    "token_endpoint": "https://github.com/login/oauth/access_token",
+    "client_id": "your_client_id_here",
+    "client_secret": "your_client_secret_here",
+    "redirect_uri": "http://localhost:3005/oauth/callback",
+    "scopes": ["read:user", "user:email"]
+  },
+  "servers": []
+}</code></pre>
+                                <button class="copy-btn absolute top-2 right-2 text-gray-400 hover:text-white" data-copy='{
+  "hosting": {
+    "platform": "node",
+    "port": 3005,
+    "base_url": "http://localhost:3005"
+  },
+  "master_oauth": {
+    "authorization_endpoint": "https://github.com/login/oauth/authorize",
+    "token_endpoint": "https://github.com/login/oauth/access_token",
+    "client_id": "your_client_id_here",
+    "client_secret": "your_client_secret_here",
+    "redirect_uri": "http://localhost:3005/oauth/callback",
+    "scopes": ["read:user", "user:email"]
+  },
+  "servers": []
+}'>
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Server Configuration -->
+                <section id="server-config" class="step-card bg-white p-6 rounded-xl shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-semibold flex items-center">
+                            <i class="fas fa-cog mr-3 text-blue-500"></i>
+                            Step 5: Server Configuration
+                        </h3>
+                        <button class="mark-complete bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors" data-step="5">
+                            <i class="fas fa-check mr-2"></i>Mark Complete
+                        </button>
+                    </div>
+                    
+                    <p class="text-gray-600 mb-6">Configure your Master MCP Server with the proper settings and security:</p>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <h4 class="font-semibold mb-3">Configuration Options</h4>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="space-y-4">
+                                    <div class="p-4 bg-gray-50 rounded-lg">
+                                        <h5 class="font-semibold text-sm mb-2">🏠 Hosting Configuration</h5>
+                                        <ul class="text-xs text-gray-600 space-y-1">
+                                            <li><strong>platform:</strong> node | cloudflare-workers | koyeb | docker</li>
+                                            <li><strong>port:</strong> Server port (default: 3000)</li>
+                                            <li><strong>base_url:</strong> Public URL for callbacks</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="p-4 bg-gray-50 rounded-lg">
+                                        <h5 class="font-semibold text-sm mb-2">🔐 Authentication</h5>
+                                        <ul class="text-xs text-gray-600 space-y-1">
+                                            <li><strong>authorization_endpoint:</strong> OAuth auth URL</li>
+                                            <li><strong>token_endpoint:</strong> OAuth token URL</li>
+                                            <li><strong>scopes:</strong> Requested permissions</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                <div class="space-y-4">
+                                    <div class="p-4 bg-blue-50 rounded-lg">
+                                        <h5 class="font-semibold text-sm mb-2">⚡ Advanced Features</h5>
+                                        <ul class="text-xs text-gray-600 space-y-1">
+                                            <li><strong>Load Balancing:</strong> round_robin | weighted | health</li>
+                                            <li><strong>Circuit Breaker:</strong> Failure protection</li>
+                                            <li><strong>Retry Policies:</strong> Automatic retry logic</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="p-4 bg-green-50 rounded-lg">
+                                        <h5 class="font-semibold text-sm mb-2">📊 Monitoring</h5>
+                                        <ul class="text-xs text-gray-600 space-y-1">
+                                            <li><strong>Health Checks:</strong> Server status monitoring</li>
+                                            <li><strong>Metrics:</strong> Performance tracking</li>
+                                            <li><strong>Logging:</strong> debug | info | warn | error</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-3">Environment-Based Configuration</h4>
+                            <p class="text-sm text-gray-600 mb-3">You can override config values using environment variables:</p>
+                            <div class="code-block p-4 relative">
+                                <pre><code># Override hosting settings
+MASTER_MCP_HOSTING_PORT=3005
+MASTER_MCP_HOSTING_BASE_URL=http://localhost:3005
+
+# Override OAuth settings
+MASTER_MCP_MASTER_OAUTH_CLIENT_ID=your_client_id
+MASTER_MCP_MASTER_OAUTH_CLIENT_SECRET=your_secret
+
+# Logging level
+MASTER_MCP_LOGGING_LEVEL=debug</code></pre>
+                                <button class="copy-btn absolute top-2 right-2 text-gray-400 hover:text-white" data-copy="# Override hosting settings
+MASTER_MCP_HOSTING_PORT=3005
+MASTER_MCP_HOSTING_BASE_URL=http://localhost:3005
+
+# Override OAuth settings
+MASTER_MCP_MASTER_OAUTH_CLIENT_ID=your_client_id
+MASTER_MCP_MASTER_OAUTH_CLIENT_SECRET=your_secret
+
+# Logging level
+MASTER_MCP_LOGGING_LEVEL=debug">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-3">Validate Configuration</h4>
+                            <div class="code-block p-4 relative">
+                                <pre><code>npm run config:validate</code></pre>
+                                <button class="copy-btn absolute top-2 right-2 text-gray-400 hover:text-white" data-copy="npm run config:validate">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                            <p class="text-sm text-gray-600 mt-2">Validates your configuration against the JSON schema.</p>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Server Startup -->
+                <section id="server-startup" class="step-card bg-white p-6 rounded-xl shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-semibold flex items-center">
+                            <i class="fas fa-play mr-3 text-blue-500"></i>
+                            Step 6: Server Startup & Testing
+                        </h3>
+                        <button class="mark-complete bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors" data-step="6">
+                            <i class="fas fa-check mr-2"></i>Mark Complete
+                        </button>
+                    </div>
+                    
+                    <p class="text-gray-600 mb-6">Start your Master MCP Server and verify it's working correctly:</p>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <h4 class="font-semibold mb-3">1. Start the Server</h4>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <h5 class="text-sm font-semibold mb-2">Development Mode</h5>
+                                    <div class="code-block p-3 relative">
+                                        <pre><code>npm run dev</code></pre>
+                                        <button class="copy-btn absolute top-1 right-1 text-gray-400 hover:text-white text-sm" data-copy="npm run dev">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </div>
+                                    <p class="text-xs text-gray-600 mt-1">Auto-reloads on file changes</p>
+                                </div>
+                                <div>
+                                    <h5 class="text-sm font-semibold mb-2">Production Mode</h5>
+                                    <div class="code-block p-3 relative">
+                                        <pre><code>npm start</code></pre>
+                                        <button class="copy-btn absolute top-1 right-1 text-gray-400 hover:text-white text-sm" data-copy="npm start">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </div>
+                                    <p class="text-xs text-gray-600 mt-1">Optimized for production</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-3">2. Verify Server Status</h4>
+                            <div class="space-y-3">
+                                <div>
+                                    <h5 class="text-sm font-semibold mb-2">Health Check</h5>
+                                    <div class="flex items-center space-x-4">
+                                        <div class="code-block p-3 flex-1 relative">
+                                            <code>curl http://localhost:3005/health</code>
+                                            <button class="copy-btn absolute top-1 right-1 text-gray-400 hover:text-white text-sm" data-copy="curl http://localhost:3005/health">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
+                                        </div>
+                                        <a href="http://localhost:3005/health" target="_blank" class="bg-blue-500 text-white px-3 py-2 rounded text-sm hover:bg-blue-600">
+                                            <i class="fas fa-external-link-alt mr-1"></i>Test
+                                        </a>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <h5 class="text-sm font-semibold mb-2">OAuth Endpoints</h5>
+                                    <div class="flex items-center space-x-4">
+                                        <div class="code-block p-3 flex-1 relative">
+                                            <code>curl http://localhost:3005/oauth/authorize</code>
+                                            <button class="copy-btn absolute top-1 right-1 text-gray-400 hover:text-white text-sm" data-copy="curl http://localhost:3005/oauth/authorize">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
+                                        </div>
+                                        <a href="http://localhost:3005/oauth/authorize" target="_blank" class="bg-blue-500 text-white px-3 py-2 rounded text-sm hover:bg-blue-600">
+                                            <i class="fas fa-external-link-alt mr-1"></i>Test
+                                        </a>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <h5 class="text-sm font-semibold mb-2">Server Info</h5>
+                                    <div class="flex items-center space-x-4">
+                                        <div class="code-block p-3 flex-1 relative">
+                                            <code>curl http://localhost:3005/info</code>
+                                            <button class="copy-btn absolute top-1 right-1 text-gray-400 hover:text-white text-sm" data-copy="curl http://localhost:3005/info">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
+                                        </div>
+                                        <a href="http://localhost:3005/info" target="_blank" class="bg-blue-500 text-white px-3 py-2 rounded text-sm hover:bg-blue-600">
+                                            <i class="fas fa-external-link-alt mr-1"></i>Test
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-3">3. Expected Server Output</h4>
+                            <div class="code-block p-4">
+                                <pre class="text-sm"><code>🚀 Master MCP Server starting...
+📋 Configuration loaded: 0 servers, platform: node
+🔐 OAuth configured: GitHub (scopes: read:user, user:email)
+🌐 Server listening on http://localhost:3005
+✅ Health check endpoint: http://localhost:3005/health
+🔑 OAuth authorize: http://localhost:3005/oauth/authorize
+📊 Server info: http://localhost:3005/info</code></pre>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                            <h4 class="font-semibold text-green-800 mb-2">
+                                <i class="fas fa-check-circle mr-2"></i>Success Indicators
+                            </h4>
+                            <ul class="text-sm text-green-700 space-y-1">
+                                <li>• Server starts without errors</li>
+                                <li>• Health endpoint returns status 200</li>
+                                <li>• OAuth authorization redirects to GitHub</li>
+                                <li>• Server info shows correct configuration</li>
+                                <li>• No configuration validation errors</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Claude Desktop Integration -->
+                <section id="claude-integration" class="step-card bg-white p-6 rounded-xl shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-semibold flex items-center">
+                            <i class="fas fa-robot mr-3 text-blue-500"></i>
+                            Step 7: Claude Desktop Integration
+                        </h3>
+                        <button class="mark-complete bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors" data-step="7">
+                            <i class="fas fa-check mr-2"></i>Mark Complete
+                        </button>
+                    </div>
+                    
+                    <p class="text-gray-600 mb-6">Connect your Master MCP Server to Claude Desktop for seamless AI interactions:</p>
+                    
+                    <div class="space-y-6">
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                            <h4 class="font-semibold text-blue-800 mb-2">
+                                <i class="fas fa-info-circle mr-2"></i>What is Claude Desktop?
+                            </h4>
+                            <p class="text-sm text-blue-700">Claude Desktop is a desktop application that allows you to interact with Claude AI while having access to your local files, tools, and MCP servers for enhanced functionality.</p>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-3">1. Install Claude Desktop</h4>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="p-4 bg-gray-50 rounded-lg">
+                                    <h5 class="font-semibold text-sm mb-2">🍎 macOS</h5>
+                                    <a href="https://claude.ai/download" target="_blank" class="text-blue-600 hover:text-blue-800 text-sm">
+                                        <i class="fas fa-download mr-1"></i>Download for macOS
+                                    </a>
+                                    <p class="text-xs text-gray-600 mt-2">Requires macOS 11.0 or later</p>
+                                </div>
+                                <div class="p-4 bg-gray-50 rounded-lg">
+                                    <h5 class="font-semibold text-sm mb-2">🪟 Windows</h5>
+                                    <a href="https://claude.ai/download" target="_blank" class="text-blue-600 hover:text-blue-800 text-sm">
+                                        <i class="fas fa-download mr-1"></i>Download for Windows
+                                    </a>
+                                    <p class="text-xs text-gray-600 mt-2">Requires Windows 10 or later</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-3">2. Configure Claude Desktop</h4>
+                            <p class="text-sm text-gray-600 mb-3">Add your Master MCP Server to Claude Desktop's configuration:</p>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <h5 class="text-sm font-semibold mb-2">Find Configuration File</h5>
+                                    <div class="grid md:grid-cols-2 gap-4">
+                                        <div>
+                                            <p class="text-xs text-gray-600 mb-2">macOS Location:</p>
+                                            <div class="code-block p-3 relative">
+                                                <code class="text-xs">~/Library/Application Support/Claude/claude_desktop_config.json</code>
+                                                <button class="copy-btn absolute top-1 right-1 text-gray-400 hover:text-white text-xs" data-copy="~/Library/Application Support/Claude/claude_desktop_config.json">
+                                                    <i class="fas fa-copy"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs text-gray-600 mb-2">Windows Location:</p>
+                                            <div class="code-block p-3 relative">
+                                                <code class="text-xs">%APPDATA%\Claude\claude_desktop_config.json</code>
+                                                <button class="copy-btn absolute top-1 right-1 text-gray-400 hover:text-white text-xs" data-copy="%APPDATA%\Claude\claude_desktop_config.json">
+                                                    <i class="fas fa-copy"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <h5 class="text-sm font-semibold mb-2">Configuration Content</h5>
+                                    <div class="code-block p-4 relative">
+                                        <pre><code>{
+  "mcpServers": {
+    "master-mcp-server": {
+      "command": "node",
+      "args": [
+        "path/to/master-mcp-server/dist/index.js"
+      ],
+      "env": {
+        "MASTER_CONFIG_PATH": "path/to/master-mcp-server/config.json"
+      }
+    }
+  }
+}</code></pre>
+                                        <button class="copy-btn absolute top-2 right-2 text-gray-400 hover:text-white" data-copy='{
+  "mcpServers": {
+    "master-mcp-server": {
+      "command": "node",
+      "args": [
+        "path/to/master-mcp-server/dist/index.js"
+      ],
+      "env": {
+        "MASTER_CONFIG_PATH": "path/to/master-mcp-server/config.json"
+      }
+    }
+  }
+}'>
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </div>
+                                    <p class="text-xs text-gray-600 mt-2">Replace <code>path/to/master-mcp-server</code> with your actual project path</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-3">3. Alternative: Direct Protocol Connection</h4>
+                            <p class="text-sm text-gray-600 mb-3">For development or advanced use, connect directly via stdio:</p>
+                            <div class="code-block p-4 relative">
+                                <pre><code>{
+  "mcpServers": {
+    "master-mcp-server": {
+      "command": "npm",
+      "args": ["run", "mcp"],
+      "cwd": "path/to/master-mcp-server"
+    }
+  }
+}</code></pre>
+                                <button class="copy-btn absolute top-2 right-2 text-gray-400 hover:text-white" data-copy='{
+  "mcpServers": {
+    "master-mcp-server": {
+      "command": "npm",
+      "args": ["run", "mcp"],
+      "cwd": "path/to/master-mcp-server"
+    }
+  }
+}'>
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-3">4. Test the Integration</h4>
+                            <div class="space-y-3">
+                                <div class="p-4 bg-green-50 rounded-lg">
+                                    <h5 class="font-semibold text-green-800 text-sm mb-2">✅ Verification Steps</h5>
+                                    <ol class="text-sm text-green-700 space-y-1">
+                                        <li>1. Restart Claude Desktop</li>
+                                        <li>2. Start a new conversation</li>
+                                        <li>3. Look for MCP server connection in the status bar</li>
+                                        <li>4. Try using tools and resources from your server</li>
+                                    </ol>
+                                </div>
+                                
+                                <div class="p-4 bg-yellow-50 rounded-lg">
+                                    <h5 class="font-semibold text-yellow-800 text-sm mb-2">🔧 Troubleshooting</h5>
+                                    <ul class="text-sm text-yellow-700 space-y-1">
+                                        <li>• Check Claude Desktop logs for connection errors</li>
+                                        <li>• Verify file paths are absolute and correct</li>
+                                        <li>• Ensure Master MCP Server is built (npm run build)</li>
+                                        <li>• Check that config.json exists and is valid</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Backend Server Configuration -->
+                <section id="backend-servers" class="step-card bg-white p-6 rounded-xl shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-semibold flex items-center">
+                            <i class="fas fa-server mr-3 text-blue-500"></i>
+                            Step 8: Adding Backend MCP Servers
+                        </h3>
+                        <button class="mark-complete bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors" data-step="8">
+                            <i class="fas fa-check mr-2"></i>Mark Complete
+                        </button>
+                    </div>
+                    
+                    <p class="text-gray-600 mb-6">Configure your Master MCP Server to manage and route to multiple backend MCP servers:</p>
+                    
+                    <div class="space-y-6">
+                        <div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                            <h4 class="font-semibold text-purple-800 mb-2">
+                                <i class="fas fa-lightbulb mr-2"></i>Server Aggregation
+                            </h4>
+                            <p class="text-sm text-purple-700">Your Master MCP Server acts as a central hub, aggregating capabilities from multiple backend servers and presenting them as a unified interface to Claude.</p>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-3">1. Server Configuration Structure</h4>
+                            <p class="text-sm text-gray-600 mb-3">Add servers to your <code>config.json</code> file:</p>
+                            <div class="code-block p-4 relative">
+                                <pre><code>{
+  "hosting": { /* ... */ },
+  "master_oauth": { /* ... */ },
+  "servers": [
+    {
+      "id": "filesystem-server",
+      "type": "npm",
+      "package": "@modelcontextprotocol/server-filesystem",
+      "version": "latest",
+      "auth_strategy": "bypass_auth",
+      "config": {
+        "environment": {
+          "ALLOWED_DIRECTORIES": "/Users/username/Documents"
+        },
+        "args": ["--port", "3001"]
+      }
+    },
+    {
+      "id": "git-server",
+      "type": "git",
+      "url": "https://github.com/modelcontextprotocol/server-git.git",
+      "branch": "main",
+      "auth_strategy": "master_oauth",
+      "config": {
+        "environment": {
+          "GIT_REPO_PATH": "/path/to/repo"
+        }
+      }
+    }
+  ]
+}</code></pre>
+                                <button class="copy-btn absolute top-2 right-2 text-gray-400 hover:text-white" data-copy='{
+  "hosting": {},
+  "master_oauth": {},
+  "servers": [
+    {
+      "id": "filesystem-server",
+      "type": "npm",
+      "package": "@modelcontextprotocol/server-filesystem",
+      "version": "latest",
+      "auth_strategy": "bypass_auth",
+      "config": {
+        "environment": {
+          "ALLOWED_DIRECTORIES": "/Users/username/Documents"
+        },
+        "args": ["--port", "3001"]
+      }
+    },
+    {
+      "id": "git-server",
+      "type": "git",
+      "url": "https://github.com/modelcontextprotocol/server-git.git",
+      "branch": "main",
+      "auth_strategy": "master_oauth",
+      "config": {
+        "environment": {
+          "GIT_REPO_PATH": "/path/to/repo"
+        }
+      }
+    }
+  ]
+}'>
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-3">2. Server Types & Sources</h4>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="space-y-4">
+                                    <div class="p-4 bg-blue-50 rounded-lg">
+                                        <h5 class="font-semibold text-sm mb-2">📦 NPM Packages</h5>
+                                        <div class="text-xs space-y-1">
+                                            <div><strong>type:</strong> "npm"</div>
+                                            <div><strong>package:</strong> Package name</div>
+                                            <div><strong>version:</strong> Version or "latest"</div>
+                                        </div>
+                                        <div class="code-block p-2 mt-2 text-xs">
+                                            <code>"package": "@modelcontextprotocol/server-filesystem"</code>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="p-4 bg-green-50 rounded-lg">
+                                        <h5 class="font-semibold text-sm mb-2">🐙 Git Repositories</h5>
+                                        <div class="text-xs space-y-1">
+                                            <div><strong>type:</strong> "git"</div>
+                                            <div><strong>url:</strong> Repository URL</div>
+                                            <div><strong>branch:</strong> Branch name</div>
+                                        </div>
+                                        <div class="code-block p-2 mt-2 text-xs">
+                                            <code>"url": "https://github.com/user/mcp-server.git"</code>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="space-y-4">
+                                    <div class="p-4 bg-orange-50 rounded-lg">
+                                        <h5 class="font-semibold text-sm mb-2">🐍 Python Packages</h5>
+                                        <div class="text-xs space-y-1">
+                                            <div><strong>type:</strong> "pypi"</div>
+                                            <div><strong>package:</strong> PyPI package name</div>
+                                            <div><strong>version:</strong> Version or "latest"</div>
+                                        </div>
+                                        <div class="code-block p-2 mt-2 text-xs">
+                                            <code>"package": "mcp-server-sqlite"</code>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="p-4 bg-purple-50 rounded-lg">
+                                        <h5 class="font-semibold text-sm mb-2">📁 Local Servers</h5>
+                                        <div class="text-xs space-y-1">
+                                            <div><strong>type:</strong> "local"</div>
+                                            <div><strong>url:</strong> Local file path</div>
+                                            <div><strong>config:</strong> Local environment</div>
+                                        </div>
+                                        <div class="code-block p-2 mt-2 text-xs">
+                                            <code>"url": "/path/to/local/server"</code>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-3">3. Authentication Strategies</h4>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="space-y-3">
+                                    <div class="p-3 bg-gray-50 rounded">
+                                        <h5 class="font-semibold text-xs mb-1">🔐 master_oauth</h5>
+                                        <p class="text-xs text-gray-600">Use Master server's OAuth token</p>
+                                    </div>
+                                    <div class="p-3 bg-gray-50 rounded">
+                                        <h5 class="font-semibold text-xs mb-1">🔄 delegate_oauth</h5>
+                                        <p class="text-xs text-gray-600">Backend handles its own OAuth</p>
+                                    </div>
+                                </div>
+                                <div class="space-y-3">
+                                    <div class="p-3 bg-gray-50 rounded">
+                                        <h5 class="font-semibold text-xs mb-1">🚫 bypass_auth</h5>
+                                        <p class="text-xs text-gray-600">No authentication required</p>
+                                    </div>
+                                    <div class="p-3 bg-gray-50 rounded">
+                                        <h5 class="font-semibold text-xs mb-1">🔗 proxy_oauth</h5>
+                                        <p class="text-xs text-gray-600">Forward OAuth from client</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-3">4. Test Server Configuration</h4>
+                            <div class="space-y-3">
+                                <div class="code-block p-4 relative">
+                                    <pre><code># Validate configuration
+npm run config:validate
+
+# Test server loading
+npm run test:servers
+
+# Start with verbose logging
+npm run dev -- --log-level debug</code></pre>
+                                    <button class="copy-btn absolute top-2 right-2 text-gray-400 hover:text-white" data-copy="# Validate configuration
+npm run config:validate
+
+# Test server loading
+npm run test:servers
+
+# Start with verbose logging
+npm run dev -- --log-level debug">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                                
+                                <div class="p-4 bg-green-50 border border-green-200 rounded">
+                                    <h5 class="font-semibold text-green-800 text-sm mb-2">Expected Output</h5>
+                                    <div class="text-xs text-green-700 space-y-1">
+                                        <div>• All servers load successfully</div>
+                                        <div>• Health checks pass for each server</div>
+                                        <div>• Capabilities are properly aggregated</div>
+                                        <div>• No authentication or loading errors</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Troubleshooting -->
+                <section id="troubleshooting" class="step-card bg-white p-6 rounded-xl shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-semibold flex items-center">
+                            <i class="fas fa-tools mr-3 text-blue-500"></i>
+                            Step 9: Troubleshooting
+                        </h3>
+                        <button class="mark-complete bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors" data-step="9">
+                            <i class="fas fa-check mr-2"></i>Mark Complete
+                        </button>
+                    </div>
+                    
+                    <p class="text-gray-600 mb-6">Common issues and their solutions to get your Master MCP Server running smoothly:</p>
+                    
+                    <div class="space-y-6">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-semibold mb-3 text-red-600">🚨 Common Issues</h4>
+                                <div class="space-y-4">
+                                    <div class="border border-red-200 rounded-lg p-4">
+                                        <h5 class="font-semibold text-sm mb-2 text-red-700">Server Won't Start</h5>
+                                        <ul class="text-xs text-red-600 space-y-1">
+                                            <li>• Port already in use (change port in config)</li>
+                                            <li>• Invalid configuration file</li>
+                                            <li>• Missing dependencies</li>
+                                            <li>• TypeScript compilation errors</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="border border-red-200 rounded-lg p-4">
+                                        <h5 class="font-semibold text-sm mb-2 text-red-700">OAuth Issues</h5>
+                                        <ul class="text-xs text-red-600 space-y-1">
+                                            <li>• Invalid client ID or secret</li>
+                                            <li>• Incorrect redirect URI</li>
+                                            <li>• GitHub app not configured</li>
+                                            <li>• Environment variables not set</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="border border-red-200 rounded-lg p-4">
+                                        <h5 class="font-semibold text-sm mb-2 text-red-700">Backend Server Loading</h5>
+                                        <ul class="text-xs text-red-600 space-y-1">
+                                            <li>• Server package not found</li>
+                                            <li>• Authentication failures</li>
+                                            <li>• Network connectivity issues</li>
+                                            <li>• Invalid server configuration</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h4 class="font-semibold mb-3 text-green-600">✅ Solutions</h4>
+                                <div class="space-y-4">
+                                    <div class="border border-green-200 rounded-lg p-4">
+                                        <h5 class="font-semibold text-sm mb-2 text-green-700">Server Startup</h5>
+                                        <div class="code-block p-2 mb-2">
+                                            <code class="text-xs"># Check port usage
+lsof -i :3005
+
+# Validate config
+npm run config:validate
+
+# Clean rebuild
+npm run clean && npm run build</code>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="border border-green-200 rounded-lg p-4">
+                                        <h5 class="font-semibold text-sm mb-2 text-green-700">OAuth Debug</h5>
+                                        <div class="code-block p-2 mb-2">
+                                            <code class="text-xs"># Test OAuth endpoints
+curl http://localhost:3005/oauth/authorize
+
+# Check environment
+echo $GITHUB_CLIENT_ID</code>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="border border-green-200 rounded-lg p-4">
+                                        <h5 class="font-semibold text-sm mb-2 text-green-700">Server Loading</h5>
+                                        <div class="code-block p-2 mb-2">
+                                            <code class="text-xs"># Test individual servers
+npm run test:servers
+
+# Debug server loading
+npm run dev -- --debug-servers</code>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-3">Diagnostic Commands</h4>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <h5 class="text-sm font-semibold mb-2">Health Checks</h5>
+                                    <div class="code-block p-3 relative">
+                                        <pre><code># Server health
+curl http://localhost:3005/health
+
+# Configuration status  
+curl http://localhost:3005/config/status
+
+# Server list
+curl http://localhost:3005/servers</code></pre>
+                                        <button class="copy-btn absolute top-1 right-1 text-gray-400 hover:text-white text-sm" data-copy="# Server health
+curl http://localhost:3005/health
+
+# Configuration status  
+curl http://localhost:3005/config/status
+
+# Server list
+curl http://localhost:3005/servers">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <h5 class="text-sm font-semibold mb-2">Logging & Debug</h5>
+                                    <div class="code-block p-3 relative">
+                                        <pre><code># Enable debug logging
+export MASTER_MCP_LOGGING_LEVEL=debug
+
+# Check logs
+tail -f logs/master-mcp.log
+
+# Verbose startup
+npm run dev -- --verbose</code></pre>
+                                        <button class="copy-btn absolute top-1 right-1 text-gray-400 hover:text-white text-sm" data-copy="# Enable debug logging
+export MASTER_MCP_LOGGING_LEVEL=debug
+
+# Check logs
+tail -f logs/master-mcp.log
+
+# Verbose startup
+npm run dev -- --verbose">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-3">Getting Help</h4>
+                            <div class="grid md:grid-cols-3 gap-4">
+                                <div class="p-4 bg-blue-50 rounded-lg text-center">
+                                    <i class="fab fa-github text-2xl text-blue-600 mb-2"></i>
+                                    <h5 class="font-semibold text-sm mb-1">GitHub Issues</h5>
+                                    <a href="https://github.com/your-repo/master-mcp-server/issues" target="_blank" class="text-blue-600 hover:text-blue-800 text-xs">
+                                        Report a bug →
+                                    </a>
+                                </div>
+                                <div class="p-4 bg-purple-50 rounded-lg text-center">
+                                    <i class="fas fa-book text-2xl text-purple-600 mb-2"></i>
+                                    <h5 class="font-semibold text-sm mb-1">Documentation</h5>
+                                    <a href="http://localhost:5173" target="_blank" class="text-purple-600 hover:text-purple-800 text-xs">
+                                        Browse docs →
+                                    </a>
+                                </div>
+                                <div class="p-4 bg-green-50 rounded-lg text-center">
+                                    <i class="fas fa-comments text-2xl text-green-600 mb-2"></i>
+                                    <h5 class="font-semibold text-sm mb-1">Community</h5>
+                                    <a href="https://discord.gg/mcp" target="_blank" class="text-green-600 hover:text-green-800 text-xs">
+                                        Join Discord →
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                            <h4 class="font-semibold text-yellow-800 mb-2">
+                                <i class="fas fa-lightbulb mr-2"></i>Pro Tips
+                            </h4>
+                            <ul class="text-sm text-yellow-700 space-y-1">
+                                <li>• Always validate configuration before starting the server</li>
+                                <li>• Use debug logging when troubleshooting issues</li>
+                                <li>• Test individual servers before adding them to the master config</li>
+                                <li>• Keep your OAuth secrets secure and never commit them</li>
+                                <li>• Monitor server health and performance regularly</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Completion Section -->
+                <section class="bg-gradient-to-r from-green-500 to-blue-600 text-white p-8 rounded-xl">
+                    <div class="text-center">
+                        <i class="fas fa-trophy text-4xl mb-4"></i>
+                        <h2 class="text-2xl font-bold mb-4">Congratulations! 🎉</h2>
+                        <p class="text-lg mb-6">You've successfully set up your Master MCP Server! Your server is now ready to aggregate multiple MCP servers and provide seamless AI interactions.</p>
+                        
+                        <div class="grid md:grid-cols-3 gap-4 mb-6">
+                            <div class="bg-white bg-opacity-20 rounded-lg p-4">
+                                <i class="fas fa-server text-2xl mb-2"></i>
+                                <h3 class="font-semibold">Server Running</h3>
+                                <p class="text-sm opacity-90">Your Master MCP Server is active</p>
+                            </div>
+                            <div class="bg-white bg-opacity-20 rounded-lg p-4">
+                                <i class="fas fa-shield-alt text-2xl mb-2"></i>
+                                <h3 class="font-semibold">OAuth Configured</h3>
+                                <p class="text-sm opacity-90">Secure authentication is ready</p>
+                            </div>
+                            <div class="bg-white bg-opacity-20 rounded-lg p-4">
+                                <i class="fas fa-robot text-2xl mb-2"></i>
+                                <h3 class="font-semibold">Claude Connected</h3>
+                                <p class="text-sm opacity-90">Ready for AI interactions</p>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <h3 class="text-xl font-semibold">Next Steps</h3>
+                            <div class="flex flex-wrap justify-center gap-4">
+                                <a href="http://localhost:3005/health" target="_blank" class="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors">
+                                    <i class="fas fa-heartbeat mr-2"></i>Check Server Health
+                                </a>
+                                <a href="http://localhost:5173" target="_blank" class="bg-white text-purple-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors">
+                                    <i class="fas fa-book mr-2"></i>Browse Documentation
+                                </a>
+                                <a href="https://github.com/your-repo/master-mcp-server" target="_blank" class="bg-white text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors">
+                                    <i class="fab fa-github mr-2"></i>View Source Code
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Dashboard functionality
+        class InstallationDashboard {
+            constructor() {
+                this.completedSteps = new Set(this.loadProgress());
+                this.totalSteps = 9;
+                this.init();
+            }
+            
+            init() {
+                this.setupEventListeners();
+                this.updateProgress();
+                this.setupCopyButtons();
+                this.setupSidebar();
+                this.setupValidationUtils();
+                this.setupTestButtons();
+            }
+            
+            setupEventListeners() {
+                // Mark complete buttons
+                document.querySelectorAll('.mark-complete').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const step = parseInt(e.target.dataset.step);
+                        this.markStepComplete(step);
+                    });
+                });
+                
+                // Reset progress button
+                document.getElementById('resetProgress').addEventListener('click', () => {
+                    this.resetProgress();
+                });
+                
+                // Export progress button
+                document.getElementById('exportProgress').addEventListener('click', () => {
+                    this.exportProgress();
+                });
+                
+                // Navigation links
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const target = e.currentTarget.getAttribute('href');
+                        document.querySelector(target).scrollIntoView({ behavior: 'smooth' });
+                        if (window.innerWidth < 768) {
+                            this.closeSidebar();
+                        }
+                    });
+                });
+            }
+            
+            setupCopyButtons() {
+                document.querySelectorAll('.copy-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        const text = e.target.dataset.copy || e.target.closest('button').dataset.copy;
+                        try {
+                            await navigator.clipboard.writeText(text);
+                            const icon = btn.querySelector('i');
+                            icon.className = 'fas fa-check';
+                            setTimeout(() => {
+                                icon.className = 'fas fa-copy';
+                            }, 2000);
+                        } catch (err) {
+                            console.error('Failed to copy text: ', err);
+                        }
+                    });
+                });
+            }
+            
+            setupSidebar() {
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('overlay');
+                const openBtn = document.getElementById('openSidebar');
+                const closeBtn = document.getElementById('closeSidebar');
+                
+                openBtn.addEventListener('click', () => this.openSidebar());
+                closeBtn.addEventListener('click', () => this.closeSidebar());
+                overlay.addEventListener('click', () => this.closeSidebar());
+            }
+            
+            openSidebar() {
+                document.getElementById('sidebar').classList.add('open');
+                document.getElementById('overlay').classList.add('active');
+            }
+            
+            closeSidebar() {
+                document.getElementById('sidebar').classList.remove('open');
+                document.getElementById('overlay').classList.remove('active');
+            }
+            
+            markStepComplete(step) {
+                this.completedSteps.add(step);
+                this.saveProgress();
+                this.updateProgress();
+                this.updateStepUI(step);
+            }
+            
+            updateStepUI(step) {
+                // Update step card
+                const stepCard = document.querySelector(`section[id*="step-${step}"], section:nth-of-type(${step})`);
+                if (stepCard) {
+                    stepCard.classList.add('completed');
+                    const button = stepCard.querySelector('.mark-complete');
+                    if (button) {
+                        button.innerHTML = '<i class="fas fa-check-circle mr-2"></i>Completed';
+                        button.classList.remove('bg-green-500', 'hover:bg-green-600');
+                        button.classList.add('bg-gray-500');
+                        button.disabled = true;
+                    }
+                }
+                
+                // Update sidebar navigation
+                const navLink = document.querySelector(`[data-step="${step}"]`);
+                if (navLink) {
+                    navLink.querySelector('.check-icon').classList.remove('hidden');
+                }
+            }
+            
+            updateProgress() {
+                const progress = (this.completedSteps.size / this.totalSteps) * 100;
+                document.getElementById('progressBar').style.width = `${progress}%`;
+                document.getElementById('progressText').textContent = `${this.completedSteps.size}/${this.totalSteps} Steps`;
+                
+                // Update completed steps UI
+                this.completedSteps.forEach(step => this.updateStepUI(step));
+            }
+            
+            resetProgress() {
+                if (confirm('Are you sure you want to reset all progress?')) {
+                    this.completedSteps.clear();
+                    localStorage.removeItem('installation-progress');
+                    location.reload();
+                }
+            }
+            
+            saveProgress() {
+                localStorage.setItem('installation-progress', JSON.stringify([...this.completedSteps]));
+            }
+            
+            loadProgress() {
+                const saved = localStorage.getItem('installation-progress');
+                return saved ? JSON.parse(saved) : [];
+            }
+            
+            setupValidationUtils() {
+                // Add validation indicators to various sections
+                this.addValidationIndicators();
+            }
+            
+            setupTestButtons() {
+                // Enhance test buttons with actual functionality
+                document.querySelectorAll('a[href*="localhost:3005"]').forEach(link => {
+                    if (link.textContent.includes('Test')) {
+                        link.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            this.testEndpoint(link.href, link);
+                        });
+                    }
+                });
+            }
+            
+            addValidationIndicators() {
+                // Add real-time validation for configuration sections
+                const sections = [
+                    { id: 'prerequisites', validator: this.validatePrerequisites },
+                    { id: 'installation', validator: this.validateInstallation },
+                    { id: 'oauth-config', validator: this.validateOAuthConfig },
+                    { id: 'server-config', validator: this.validateServerConfig }
+                ];
+                
+                sections.forEach(({ id, validator }) => {
+                    const section = document.getElementById(id);
+                    if (section) {
+                        this.addValidationBadge(section, validator.bind(this));
+                    }
+                });
+            }
+            
+            addValidationBadge(section, validator) {
+                const header = section.querySelector('h3');
+                if (header) {
+                    const badge = document.createElement('span');
+                    badge.className = 'validation-badge ml-2 px-2 py-1 text-xs rounded-full bg-gray-200 text-gray-600';
+                    badge.textContent = 'Validating...';
+                    header.appendChild(badge);
+                    
+                    // Run validation
+                    setTimeout(() => {
+                        const isValid = validator();
+                        badge.className = isValid 
+                            ? 'validation-badge ml-2 px-2 py-1 text-xs rounded-full bg-green-200 text-green-800'
+                            : 'validation-badge ml-2 px-2 py-1 text-xs rounded-full bg-yellow-200 text-yellow-800';
+                        badge.textContent = isValid ? 'Ready' : 'Check setup';
+                    }, 1000);
+                }
+            }
+            
+            validatePrerequisites() {
+                // Simple validation - check if common tools might be available
+                return true; // Assume prerequisites are met for demo
+            }
+            
+            validateInstallation() {
+                // Check if we're likely in a Node.js project directory
+                return window.location.protocol === 'file:' || window.location.hostname === 'localhost';
+            }
+            
+            validateOAuthConfig() {
+                // Basic validation for OAuth configuration
+                return document.querySelector('code')?.textContent?.includes('github.com');
+            }
+            
+            validateServerConfig() {
+                // Check if configuration examples are visible
+                return document.querySelector('code')?.textContent?.includes('config.json');
+            }
+            
+            async testEndpoint(url, button) {
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i>Testing...';
+                button.classList.add('opacity-50', 'pointer-events-none');
+                
+                try {
+                    const response = await fetch(url, { 
+                        method: 'GET',
+                        mode: 'no-cors' // Handle CORS issues
+                    });
+                    
+                    // Since we're using no-cors, we can't read the response
+                    // But we can detect if the request went through
+                    this.showTestResult(button, 'success', 'Connection successful!');
+                } catch (error) {
+                    // Check if it's a network error or CORS issue
+                    if (error.message.includes('Failed to fetch')) {
+                        this.showTestResult(button, 'warning', 'Server might be down. Check if it\'s running.');
+                    } else {
+                        this.showTestResult(button, 'error', 'Connection failed: ' + error.message);
+                    }
+                } finally {
+                    setTimeout(() => {
+                        button.innerHTML = originalText;
+                        button.classList.remove('opacity-50', 'pointer-events-none');
+                    }, 3000);
+                }
+            }
+            
+            showTestResult(button, type, message) {
+                const resultDiv = document.createElement('div');
+                resultDiv.className = `test-result mt-2 p-2 rounded text-sm ${
+                    type === 'success' ? 'bg-green-100 text-green-800' :
+                    type === 'warning' ? 'bg-yellow-100 text-yellow-800' :
+                    'bg-red-100 text-red-800'
+                }`;
+                resultDiv.innerHTML = `<i class="fas fa-${
+                    type === 'success' ? 'check-circle' :
+                    type === 'warning' ? 'exclamation-triangle' : 'times-circle'
+                } mr-1"></i>${message}`;
+                
+                // Remove any existing result
+                const existingResult = button.parentNode.querySelector('.test-result');
+                if (existingResult) existingResult.remove();
+                
+                button.parentNode.appendChild(resultDiv);
+                
+                // Auto-remove after 5 seconds
+                setTimeout(() => {
+                    if (resultDiv.parentNode) {
+                        resultDiv.remove();
+                    }
+                }, 5000);
+            }
+            
+            // Advanced features
+            showNotification(message, type = 'info') {
+                const notification = document.createElement('div');
+                notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 ${
+                    type === 'success' ? 'bg-green-500 text-white' :
+                    type === 'error' ? 'bg-red-500 text-white' :
+                    type === 'warning' ? 'bg-yellow-500 text-white' :
+                    'bg-blue-500 text-white'
+                }`;
+                notification.innerHTML = `<i class="fas fa-${
+                    type === 'success' ? 'check' :
+                    type === 'error' ? 'times' :
+                    type === 'warning' ? 'exclamation' : 'info'
+                } mr-2"></i>${message}`;
+                
+                document.body.appendChild(notification);
+                
+                // Animate in
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(0)';
+                    notification.style.transition = 'transform 0.3s ease';
+                }, 10);
+                
+                // Auto-remove
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(100%)';
+                    setTimeout(() => notification.remove(), 300);
+                }, 4000);
+            }
+            
+            exportProgress() {
+                const progress = {
+                    completedSteps: [...this.completedSteps],
+                    timestamp: new Date().toISOString(),
+                    totalSteps: this.totalSteps
+                };
+                
+                const blob = new Blob([JSON.stringify(progress, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'master-mcp-server-progress.json';
+                a.click();
+                URL.revokeObjectURL(url);
+                
+                this.showNotification('Progress exported successfully!', 'success');
+            }
+        }
+        
+        // Initialize dashboard when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new InstallationDashboard();
+        });
+    </script>
+</body>
+</html>

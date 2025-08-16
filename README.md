@@ -96,6 +96,10 @@ Each example has a README with run instructions.
 - Koyeb: `deploy/koyeb/koyeb.yaml`
 - CI/CD examples: see `docs/deployment/cicd.md`
 
+## Architecture
+
+![MCP Master Architecture](docs/architecture/images/mcp_master_architecture.svg)
+
 ## Contributing & Support
 
 - See `docs/contributing/*` for development workflow and guidelines
