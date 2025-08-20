@@ -50,12 +50,16 @@ export class ConfigLoader {
       ;(void fs)
     }
 
+    Logger.info('File config loaded', { fileConfig, loadedFiles })
+
     // Environment variables
     const envOverrides = EnvironmentManager.loadEnvOverrides()
+    Logger.info('Environment overrides', { envOverrides })
     fileConfig = deepMerge(fileConfig, envOverrides)
 
     // CLI args nested overrides
     const cli = EnvironmentManager.parseCliArgs()
+    Logger.info('CLI args', { cli })
     fileConfig = deepMerge(fileConfig, cli as any)
 
     // Ensure hosting.platform and env awareness
@@ -63,6 +67,8 @@ export class ConfigLoader {
       ...fileConfig,
       hosting: { ...fileConfig.hosting, platform },
     }
+
+    Logger.info('Normalized config', { normalized })
 
     // Schema validation and secret resolution
     const schema = await SchemaValidator.loadSchema(schemaPath)
@@ -86,6 +92,7 @@ export class ConfigLoader {
     const fs = await import('node:fs/promises')
     const path = await import('node:path')
     const raw = await fs.readFile(filePath, 'utf8')
+    Logger.info('Loading config from file', { filePath, raw })
     const ext = path.extname(filePath).toLowerCase()
     let parsed: any
     if (ext === '.json') parsed = JSON.parse(raw)
@@ -98,6 +105,7 @@ export class ConfigLoader {
         parsed = (await import('yaml')).parse(raw)
       }
     }
+    Logger.info('Parsed config from file', { filePath, parsed })
     return parsed as Partial<MasterConfig>
   }
 

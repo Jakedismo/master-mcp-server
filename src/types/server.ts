@@ -1,7 +1,7 @@
 import type { ToolDefinition, ResourceDefinition, PromptDefinition } from './mcp.js'
 import type { ServerConfig } from './config.js'
 
-export type ServerType = 'python' | 'node' | 'typescript' | 'unknown'
+export type ServerType = 'python' | 'node' | 'typescript' | 'stdio' | 'unknown'
 
 export interface ServerProcess {
   pid?: number

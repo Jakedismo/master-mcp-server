@@ -26,6 +26,12 @@ export interface RouterOptions {
   routing?: RoutingConfig
 }
 
+export interface RouterOptions {
+  callToolEndpoint?: string // default '/mcp/tools/call'
+  readResourceEndpoint?: string // default '/mcp/resources/read'
+  routing?: RoutingConfig
+}
+
 export class RequestRouter {
   private readonly options: Required<Omit<RouterOptions, 'routing'>> & { routing: RoutingConfig }
   private readonly circuit: CircuitBreaker
@@ -80,6 +86,25 @@ export class RequestRouter {
     const serverId = map?.serverId ?? req.name.split('.')[0]
     const toolName = map?.originalName ?? (req.name.includes('.') ? req.name.split('.').slice(1).join('.') : req.name)
 
+    const server = this.servers.get(serverId)
+    if (!server) {
+      return { content: { error: `Server ${serverId} not found` }, isError: true }
+    }
+
+    // Handle STDIO servers differently
+    if (server.type === 'stdio') {
+      try {
+        Logger.info('Routing call to STDIO server', { serverId, toolName })
+        const { StdioCapabilityDiscovery } = await import('./stdio-capability-discovery.js')
+        const stdioDiscovery = new StdioCapabilityDiscovery()
+        const result = await stdioDiscovery.callTool(serverId, toolName, req.arguments ?? {})
+        return result.result || result
+      } catch (error) {
+        Logger.error('STDIO tool call failed', { serverId, toolName, error })
+        return { content: { error: `STDIO tool call failed: ${error}` }, isError: true }
+      }
+    }
+
     const resolution = this.registry.resolve(serverId)
     if (!resolution) {
       return { content: { error: `Route not found for tool ${req.name}` }, isError: true }
@@ -123,6 +148,25 @@ export class RequestRouter {
     const map = this.aggregator.getMappingForResource(req.uri)
     const serverId = map?.serverId ?? req.uri.split('.')[0]
     const resourceUri = map?.originalName ?? (req.uri.includes('.') ? req.uri.split('.').slice(1).join('.') : req.uri)
+
+    const server = this.servers.get(serverId)
+    if (!server) {
+      return { contents: `Server ${serverId} not found`, mimeType: 'text/plain' }
+    }
+
+    // Handle STDIO servers differently
+    if (server.type === 'stdio') {
+      try {
+        Logger.info('Routing read to STDIO server', { serverId, resourceUri })
+        const { StdioCapabilityDiscovery } = await import('./stdio-capability-discovery.js')
+        const stdioDiscovery = new StdioCapabilityDiscovery()
+        const result = await stdioDiscovery.readResource(serverId, resourceUri)
+        return result.result || result
+      } catch (error) {
+        Logger.error('STDIO resource read failed', { serverId, resourceUri, error })
+        return { contents: `STDIO resource read failed: ${error}`, mimeType: 'text/plain' }
+      }
+    }
 
     const resolution = this.registry.resolve(serverId)
     if (!resolution) {

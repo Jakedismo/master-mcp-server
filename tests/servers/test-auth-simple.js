@@ -1,6 +1,6 @@
-import './tests/setup/test-setup.js'
-import { MultiAuthManager } from './src/auth/multi-auth-manager.js'
-import { AuthStrategy } from './src/types/config.js'
+import { MultiAuthManager } from '../../src/auth/multi-auth-manager.js'
+import { AuthStrategy } from '../../src/types/config.js'
+import '../setup/test-setup.js'
 
 const masterCfg = {
   authorization_endpoint: 'http://localhost/auth',

@@ -1,8 +1,10 @@
+import 'dotenv/config'
 import express from 'express'
 import type { Request, Response } from 'express'
 import { DependencyContainer } from './server/dependency-container.js'
 import { collectSystemMetrics } from './utils/monitoring.js'
 import { CapabilityAggregator } from './modules/capability-aggregator.js'
+import { createMcpServer } from './mcp-server.js'
 
 export interface RunningServer {
   name: string
@@ -85,6 +87,15 @@ async function startNodeHttp(container: DependencyContainer): Promise<void> {
     res.json(caps)
   })
 
+  // Create the MCP server with HTTP streaming transport
+  const { handleRequest } = await createMcpServer(container)
+  
+  // Register MCP endpoints
+  app.post('/mcp', handleRequest)
+  app.get('/mcp', handleRequest)
+  app.delete('/mcp', handleRequest)
+
+  // Keep the existing endpoints for backward compatibility
   app.post('/mcp/tools/list', async (_req: Request, res: Response) => {
     const handler = container.master.handler
     const result = await handler.handleListTools({ type: 'list_tools' })

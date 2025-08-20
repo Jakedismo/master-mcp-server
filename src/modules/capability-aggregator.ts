@@ -48,16 +48,45 @@ export class CapabilityAggregator {
     clientToken?: string,
     getAuthHeaders?: (serverId: string, clientToken?: string) => Promise<AuthHeaders | undefined>
   ): Promise<void> {
+    Logger.info('Discovering capabilities', { servers: Array.from(servers.entries()) })
     this.reset()
     const fallbackHeaders: AuthHeaders = {}
     if (clientToken) fallbackHeaders['Authorization'] = `Bearer ${clientToken}`
 
     await Promise.all(
       Array.from(servers.values()).map(async (server) => {
-        if (!server.endpoint || server.endpoint === 'unknown') return
+        if (!server.endpoint || server.endpoint === 'unknown') {
+          // For STDIO servers, we need a different approach
+          if (server.type === 'stdio' && server.config.url?.startsWith('file://')) {
+            try {
+              Logger.info('Discovering capabilities for STDIO server', { serverId: server.id })
+              // Import the STDIO capability discovery module
+              const { StdioCapabilityDiscovery } = await import('./stdio-capability-discovery.js')
+              const stdioDiscovery = new StdioCapabilityDiscovery()
+              
+              const filePath = server.config.url.replace('file://', '')
+              const caps = await stdioDiscovery.discoverCapabilities(server.id, filePath)
+              Logger.info('Fetched capabilities for STDIO server', { serverId: server.id, caps })
+              server.capabilities = caps
+              this.index(server.id, caps)
+              Logger.logServerEvent('capabilities_discovered', server.id, {
+                tools: caps.tools.length,
+                resources: caps.resources.length,
+                prompts: caps.prompts?.length ?? 0,
+              })
+            } catch (err) {
+              Logger.warn(`Failed capability discovery for STDIO server ${server.id}`, err)
+            }
+          } else {
+            Logger.warn(`Skipping server with unknown endpoint`, { serverId: server.id, type: server.type })
+          }
+          return
+        }
         try {
+          Logger.info('Fetching capabilities for server', { serverId: server.id, endpoint: server.endpoint })
           const headers = (await getAuthHeaders?.(server.id, clientToken)) ?? fallbackHeaders
           const caps = await this.fetchCapabilities(server.endpoint, headers)
+          Logger.info('Fetched capabilities for server', { serverId: server.id, caps })
           server.capabilities = caps
           this.index(server.id, caps)
           Logger.logServerEvent('capabilities_discovered', server.id, {
@@ -120,6 +149,7 @@ export class CapabilityAggregator {
 
   private async fetchCapabilities(endpoint: string, headers: AuthHeaders): Promise<ServerCapabilities> {
     const urlCap = new URL(this.options.capabilitiesEndpoint, this.ensureTrailingSlash(endpoint)).toString()
+    Logger.info('Fetching capabilities from endpoint', { urlCap, headers })
     try {
       const res = await fetch(urlCap, { headers })
       if (res.ok) {
@@ -128,6 +158,7 @@ export class CapabilityAggregator {
         const tools: ToolDefinition[] = Array.isArray(json.tools) ? json.tools : (json.capabilities?.tools ?? [])
         const resources: ResourceDefinition[] = Array.isArray(json.resources) ? json.resources : (json.capabilities?.resources ?? [])
         const prompts: PromptDefinition[] | undefined = Array.isArray(json.prompts) ? json.prompts : (json.capabilities?.prompts ?? undefined)
+        Logger.info('Fetched capabilities', { tools, resources, prompts })
         return { tools, resources, prompts }
       }
     } catch (err) {
@@ -136,6 +167,7 @@ export class CapabilityAggregator {
 
     // Fallback: fetch tools and resources separately
     const [tools, resources] = await Promise.all([this.fetchTools(endpoint, headers), this.fetchResources(endpoint, headers)])
+    Logger.info('Fetched capabilities using fallbacks', { tools, resources })
     return { tools, resources }
   }
 

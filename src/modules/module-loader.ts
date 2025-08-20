@@ -182,13 +182,31 @@ export class DefaultModuleLoader implements ModuleLoader {
 
   private async loadFromLocal(config: ServerConfig, base: LoadedServer): Promise<LoadedServer> {
     Logger.logServerEvent('loadFromLocal', config.id, { path: config.url })
-    return this.startRuntime(config, base)
+    Logger.info('Loading local server', { config })
+    const result = await this.startRuntime(config, base)
+    Logger.info('Loaded local server', { result })
+    return result
   }
 
   // --- Runtime orchestration and type detection ---
   private detectServerType(config: ServerConfig): ServerType {
     // Heuristics: look at package name/url/args for hints
     const name = (config.package ?? config.url ?? '').toLowerCase()
+    Logger.info('Detecting server type', { name, config })
+    
+    // For file URLs, we should detect as stdio
+    if (config.url && config.url.startsWith('file://')) {
+      Logger.info('Assuming stdio server for file URL', { url: config.url })
+      return 'stdio'
+    }
+    
+    // For URLs, we can't determine the type from the URL itself
+    // Let's assume it's a node server for HTTP URLs
+    if (config.url && /^https?:\/\//i.test(config.url)) {
+      Logger.info('Assuming node server for HTTP URL', { url: config.url })
+      return 'node'
+    }
+    
     if (name.endsWith('.py') || /py|pypi|python/.test(name)) return 'python'
     if (/ts|typescript/.test(name)) return 'typescript'
     if (/node|js|npm/.test(name)) return 'node'
@@ -200,15 +218,30 @@ export class DefaultModuleLoader implements ModuleLoader {
     if (port) return `http://${this.options.defaultHostname}:${port}`
     // If URL looks like http(s):// use as-is
     const url = config.url ?? ''
+    Logger.info('Deriving endpoint', { url, config })
     if (/^https?:\/\//i.test(url)) return url
+    // For file URLs (STDIO servers), we can't derive an HTTP endpoint
+    if (url.startsWith('file://')) return 'unknown'
     return 'unknown'
   }
 
   private async startRuntime(config: ServerConfig, base: LoadedServer): Promise<LoadedServer> {
     const type = this.detectServerType(config)
+    Logger.info('Detected server type', { type, config })
     let proc: ServerProcess | undefined
     try {
-      if (type === 'python') {
+      // For remote servers (HTTP URLs), we don't need to start a process
+      if (config.url && /^https?:\/\//i.test(config.url)) {
+        Logger.info('Remote server, no process to start', { url: config.url })
+        proc = undefined
+      } else if (type === 'stdio') {
+        // For STDIO servers, start as a child process
+        Logger.info('Starting STDIO server as child process', { url: config.url })
+        const { StdioManager } = await import('./stdio-manager.js')
+        const stdioManager = new StdioManager()
+        const filePath = config.url!.replace('file://', '')
+        proc = await stdioManager.startServer(config.id, filePath, config.config.environment)
+      } else if (type === 'python') {
         proc = await this.startPythonServer(config)
       } else if (type === 'typescript' || type === 'node') {
         proc = await this.startTypeScriptServer(config)
@@ -220,6 +253,7 @@ export class DefaultModuleLoader implements ModuleLoader {
       Logger.error(`Failed to start runtime for ${config.id}`, err)
       return { ...base, status: 'error' }
     }
+    Logger.info('Started runtime', { proc, base })
     return { ...base, process: proc, status: 'starting' }
   }
 
@@ -229,7 +263,34 @@ export class DefaultModuleLoader implements ModuleLoader {
     return { stop: async () => void 0 }
   }
 
-  private async startTypeScriptServer(_config: ServerConfig): Promise<ServerProcess> {
+  private async startTypeScriptServer(config: ServerConfig): Promise<ServerProcess> {
+    // Check if this is a file URL that should be started as a child process
+    if (config.url && config.url.startsWith('file://')) {
+      Logger.info('Starting TypeScript server as child process', { url: config.url })
+      
+      // Import child_process dynamically
+      const { spawn } = await import('node:child_process')
+      
+      // Convert file:// URL to path
+      const filePath = config.url.replace('file://', '')
+      
+      // Spawn the process
+      const proc = spawn('node', [filePath], {
+        stdio: ['pipe', 'pipe', 'pipe'], // stdin, stdout, stderr
+        env: { ...process.env, ...config.config.environment }
+      })
+      
+      return {
+        pid: proc.pid,
+        stop: async () => {
+          return new Promise((resolve) => {
+            proc.kill()
+            setTimeout(() => resolve(), 1000) // Wait 1 second for graceful shutdown
+          })
+        }
+      }
+    }
+    
     // Placeholder: assume an external process is started via orchestrator. Provide a no-op stop.
     return { stop: async () => void 0 }
   }

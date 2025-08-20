@@ -20,6 +20,27 @@
     "circuitBreaker": { "failureThreshold": 5, "successThreshold": 2, "recoveryTimeoutMs": 30000 },
     "retry": { "maxRetries": 2, "baseDelayMs": 250, "maxDelayMs": 4000, "backoffFactor": 2, "jitter": "full" }
   },
-  "servers": []
+  "servers": [
+    {
+      "id": "test-server",
+      "type": "local",
+      "url": "http://localhost:3006",
+      "auth_strategy": "bypass_auth",
+      "config": {
+        "environment": {},
+        "args": []
+      }
+    },
+    {
+      "id": "stdio-server",
+      "type": "local",
+      "url": "file://./examples/stdio-mcp-server.cjs",
+      "auth_strategy": "bypass_auth",
+      "config": {
+        "environment": {},
+        "args": []
+      }
+    }
+  ]
 }
 

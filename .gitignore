@@ -68,6 +68,7 @@ out/
 .env.test.local
 .env.production.local
 .env.*.local
+.env.production
 
 # Secrets and sensitive configuration
 config/secrets.json
@@ -285,9 +286,14 @@ ouroboros-results/
 AGENTS.md
 CLAUDE.md
 CRUSH.md
+GEMINI.md
+QWEN.md
 IMPLEMENTATION_PLAN.md
 SESSION-MEMORY.md
 task-definition.md
 
 # Documentation application
 .vitepress
+
+# Random
+.DS_Store

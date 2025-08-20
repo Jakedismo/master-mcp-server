@@ -44,7 +44,9 @@ export class MasterServer {
   }
 
   async loadServers(servers: ServerConfig[], clientToken?: string): Promise<void> {
+    Logger.info('Loading servers', { servers })
     const loaded = await this.loader.loadServers(servers, clientToken)
+    Logger.info('Loaded servers', { loaded: Array.from(loaded.entries()) })
     this.servers.clear()
     for (const [id, s] of loaded) this.servers.set(id, s)
     this.router = new RequestRouter(this.servers, this.aggregator, this.getAuthHeaders.bind(this), {
@@ -54,6 +56,7 @@ export class MasterServer {
   }
 
   async discoverAllCapabilities(clientToken?: string): Promise<void> {
+    Logger.info('Discovering all capabilities', { servers: Array.from(this.servers.entries()) })
     const headersOnly = async (serverId: string, token?: string) => {
       const res = await this.getAuthHeaders(serverId, token)
       if (res && (res as OAuthDelegation).type === 'oauth_delegation') {
@@ -62,6 +65,7 @@ export class MasterServer {
       return res as AuthHeaders | undefined
     }
     await this.aggregator.discoverCapabilities(this.servers, clientToken, headersOnly)
+    Logger.info('Discovered all capabilities', { tools: this.aggregator.getAllTools(this.servers), resources: this.aggregator.getAllResources(this.servers) })
   }
 
   // Allow host app to inject an auth header strategy (e.g., MultiAuthManager)

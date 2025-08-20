@@ -12,5 +12,16 @@
     "redirect_uri": "http://localhost:3005/oauth/callback",
     "scopes": ["read:user", "user:email"]
   },
-  "servers": []
+  "servers": [
+    {
+      "id": "test-server",
+      "type": "local",
+      "url": "http://localhost:3006",
+      "auth_strategy": "bypass_auth",
+      "config": {
+        "environment": {},
+        "args": []
+      }
+    }
+  ]
 }
