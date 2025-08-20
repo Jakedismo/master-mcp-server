@@ -1,8 +1,6 @@
-# Master MCP Server (Phase 11 — Final)
+# Master MCP Server
 
 Master MCP Server aggregates multiple MCP servers behind a single, secure endpoint. It provides configuration-driven module loading, unified capability discovery, request routing with resilience, and first-class OAuth flows for multi-backend authentication.
-
-This is Phase 11 (Final): the full implementation is complete with documentation, examples, and deployment recipes.
 
 ## Highlights
 
