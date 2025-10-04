@@ -3,7 +3,7 @@ import type { ServerCapabilities } from '../types/server.js'
 import { StdioManager } from './stdio-manager.js'
 
 export class StdioCapabilityDiscovery {
-  private stdioManager = new StdioManager()
+  constructor(private stdioManager: StdioManager = new StdioManager()) {}
 
   async discoverCapabilities(serverId: string, filePath: string): Promise<ServerCapabilities> {
     Logger.info('Discovering capabilities for STDIO server', { serverId, filePath })
