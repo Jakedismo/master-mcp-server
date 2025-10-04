@@ -5,6 +5,7 @@ import type { ServerProcess } from '../types/server.js'
 export class StdioManager {
   private processes = new Map<string, ChildProcess>()
   private responseQueues = new Map<string, Array<{ resolve: (value: any) => void; reject: (reason: any) => void; id: number | string }>>()
+  private notificationCallbacks = new Map<string, (message: any) => void>()
   private messageBuffers = new Map<string, string>()
 
   async startServer(serverId: string, filePath: string, env?: Record<string, string>): Promise<ServerProcess> {
@@ -121,24 +122,37 @@ export class StdioManager {
     this.messageBuffers.set(serverId, remainingBuffer)
   }
 
+  public onNotification(serverId: string, callback: (message: any) => void) {
+    this.notificationCallbacks.set(serverId, callback)
+  }
+
   private processMessage(serverId: string, message: any) {
     Logger.debug('Received message from STDIO server', { serverId, message })
-    
+
     // Check if this is a response to a pending request
-    const queue = this.responseQueues.get(serverId)
-    if (queue) {
-      // Find the matching request in the queue
-      const index = queue.findIndex(item => item.id === message.id)
-      if (index !== -1) {
-        const { resolve } = queue.splice(index, 1)[0]
-        resolve(message)
-        return
+    if (message.id !== undefined) {
+      const queue = this.responseQueues.get(serverId)
+      if (queue) {
+        const index = queue.findIndex((item) => item.id === message.id)
+        if (index !== -1) {
+          const { resolve } = queue.splice(index, 1)[0]
+          resolve(message)
+          return
+        }
       }
     }
-    
+
     // Handle notifications (no id) or unmatched responses
-    Logger.debug('Received notification or unmatched response from STDIO server', { serverId, message })
-    // TODO: Handle notifications and other message types
+    const callback = this.notificationCallbacks.get(serverId)
+    if (callback) {
+      try {
+        callback(message)
+      } catch (err) {
+        Logger.error('Error in notification callback', { serverId, error: err })
+      }
+    } else {
+      Logger.debug('Received notification or unmatched response from STDIO server, but no callback registered', { serverId, message })
+    }
   }
 
   async sendMessage(serverId: string, message: any): Promise<void> {
@@ -205,5 +219,6 @@ export class StdioManager {
     this.processes.delete(serverId)
     this.responseQueues.delete(serverId)
     this.messageBuffers.delete(serverId)
+    this.notificationCallbacks.delete(serverId)
   }
 }

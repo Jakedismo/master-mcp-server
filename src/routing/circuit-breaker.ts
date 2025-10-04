@@ -111,7 +111,6 @@ export class CircuitBreaker {
     }
     // Closed state: reset failures on success
     rec.failures = 0
-    rec.successes = 0
     this.storage.set(key, rec)
   }
 
